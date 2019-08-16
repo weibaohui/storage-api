@@ -40,3 +40,16 @@ func TestDefaultStore(t *testing.T) {
 	fmt.Println("ClusterRunningState=", store.ClusterRunningState)
 	fmt.Println("ClusterHealthyState=", store.ClusterHealthyState)
 }
+
+func TestQuotaList(t *testing.T) {
+	robot := NewRobot("https", "192.168.3.60", "6080", "optadmin", "adminadmin")
+	list, err := robot.QuotaList("9fdc9c55-cb34-4e40-9da9-ada6d5334a6c")
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	for _, v := range list.Data.Quotas {
+		fmt.Println(v)
+
+	}
+
+}

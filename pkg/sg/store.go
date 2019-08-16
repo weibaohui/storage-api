@@ -46,7 +46,7 @@ func (r *Robot) StoreList() (*StoreList, error) {
 		return nil, err
 	}
 	if list.ErrNo != 0 {
-		return &StoreList{}, errors.New(list.ErrorString())
+		return nil, errors.New(list.ErrorString())
 	}
 	return list, nil
 }
