@@ -48,8 +48,7 @@ func TestQuotaList(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 	for _, v := range list.Data.Quotas {
-		fmt.Println(v)
-
+		fmt.Println(v.ID, v.Fsid)
 	}
 
 }

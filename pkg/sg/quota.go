@@ -77,7 +77,6 @@ func (r *Robot) QuotaList() (*QuotasList, error) {
 	params := make(map[string]string)
 	params["params"] = "{\"limit\":10000,\"start\":0,\"sort\":\"\",\"data\":[]}"
 	j, err := r.PostWithLoginSession(url, params)
-
 	if err != nil {
 		return nil, err
 	}
@@ -139,4 +138,11 @@ func (r *Robot) CreateQuota(dir string, ips, ops, readBw, writeBw int) (string, 
 		return "", err
 	}
 	return j, nil
+}
+
+//删除配额
+//POST
+//https://192.168.3.60:6080/commands/delete_quota.action?cmd_id=0.5855324522870262&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
+func (r *Robot) DeleteQuota() {
+	//
 }
