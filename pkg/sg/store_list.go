@@ -1,8 +1,9 @@
+// 存储系统管理，包括 列表
 package sg
 
 import (
 	"encoding/json"
-	"golang.org/x/tools/go/ssa/interp/testdata/src/errors"
+	"errors"
 )
 
 type StoreList struct {
