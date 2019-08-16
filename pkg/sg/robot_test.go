@@ -56,7 +56,7 @@ func TestQuotaList(t *testing.T) {
 
 func TestCreateQuota(t *testing.T) {
 	robot := FakeRobot()
-	json, err := robot.CreateQuota()
+	json, err := robot.CreateQuota("/nfs", 55, 66, 77, 88)
 	if err != nil {
 		t.Fatal(err.Error())
 	}
