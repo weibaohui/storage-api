@@ -43,7 +43,7 @@ func TestDefaultStore(t *testing.T) {
 
 func TestQuotaList(t *testing.T) {
 	robot := FakeRobot()
-	list, err := robot.QuotaList("9fdc9c55-cb34-4e40-9da9-ada6d5334a6c")
+	list, err := robot.QuotaList()
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -56,7 +56,7 @@ func TestQuotaList(t *testing.T) {
 
 func TestCreateQuota(t *testing.T) {
 	robot := FakeRobot()
-	json, err := robot.CreateQuota("9fdc9c55-cb34-4e40-9da9-ada6d5334a6c")
+	json, err := robot.CreateQuota()
 	if err != nil {
 		t.Fatal(err.Error())
 	}
