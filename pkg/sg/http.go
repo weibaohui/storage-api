@@ -11,11 +11,8 @@ import (
 func (r *Robot) PostWithLoginSession(fullURL string, params map[string]string) (string, error) {
 	req := httpkit.Post(fullURL)
 	SetSkipSSLVerify(req)
-	loginCookies, err := r.loginCookie()
-	if err != nil {
-		return "", err
-	}
-	for _, v := range loginCookies {
+
+	for _, v := range r.loginCookies {
 		req.SetCookie(v)
 	}
 	for k, v := range params {

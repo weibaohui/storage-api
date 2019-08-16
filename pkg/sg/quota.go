@@ -66,6 +66,7 @@ type QuotasList struct {
 	TraceID        string      `json:"trace_id"`
 }
 
+// 查询配额列表
 //POST
 //登录cookie
 //https://192.168.3.60:6080/commands/get_quota.action?cmd_id=0.5387214431814484&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
@@ -73,7 +74,6 @@ func (r *Robot) QuotaList(uuid string) (*QuotasList, error) {
 	url := r.fullURL("/commands/get_quota.action?user_name=" + r.Username + "&uuid=" + uuid)
 
 	params := make(map[string]string)
-	params["rand"] = ""
 	params["params"] = "{\"limit\":10000,\"start\":0,\"sort\":\"\",\"data\":[]}"
 	j, err := r.PostWithLoginSession(url, params)
 
@@ -89,4 +89,20 @@ func (r *Robot) QuotaList(uuid string) (*QuotasList, error) {
 		return nil, errors.New(list.ErrorString())
 	}
 	return list, nil
+}
+
+//设置配额
+//POST
+//登录cookie
+//https://192.168.3.60:6080/commands/create_quota.action?cmd_id=0.5181687999132814&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
+func (r *Robot) CreateQuota(uuid string) (string, error) {
+	url := r.fullURL("/commands/create_quota.action?user_name=" + r.Username + "&uuid=" + uuid)
+	params := make(map[string]string)
+	s := `{"quotas":[{"path":"ParaStor300S:/nfs1","auth_provider_id":"0","user_type":"USERTYPE_NONE","user_or_group_name":"","description":"","logical_quota_cal_type":"QUOTA_NONE","logical_hard_threshold":0,"logical_soft_threshold":0,"logical_grace_time":"0","logical_suggest_threshold":0,"filenr_quota_cal_type":"QUOTA_NONE","filenr_hard_threshold":0,"filenr_soft_threshold":0,"filenr_grace_time":"0","filenr_suggest_threshold":0,"physical_quota_cal_type":"QUOTA_NONE","physical_hard_threshold":0,"physical_soft_threshold":0,"physical_grace_time":"0","physical_suggest_threshold":0,"physical_count_redundant_space":false,"physical_count_snapshot":false,"ips_quota":"11","ops_quota":"22","read_bandwidth_quota":"33","write_bandwidth_quota":"44","user_or_group_id":""}]}`
+	params["params"] = s
+	j, err := r.PostWithLoginSession(url, params)
+	if err != nil {
+		return "", err
+	}
+	return j, nil
 }

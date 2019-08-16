@@ -39,15 +39,11 @@ func (r *Robot) loginCookie() ([]*http.Cookie, error) {
 
 //主界面的Cookie
 func (r *Robot) mainPageCookie() (cookies []*http.Cookie, err error) {
-	loginCookies, err := r.loginCookie()
-	if err != nil {
-		return nil, err
-	}
 
 	url := r.fullURL(MainPageUrl)
 	req := httpkit.Get(url)
 	SetSkipSSLVerify(req)
-	for _, v := range loginCookies {
+	for _, v := range r.loginCookies {
 		cookies = append(cookies, v)
 		req.SetCookie(v)
 	}

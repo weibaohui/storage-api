@@ -6,7 +6,7 @@ import (
 )
 
 func TestCookies(t *testing.T) {
-	robot := NewRobot("https", "192.168.3.60", "6080", "optadmin", "adminadmin")
+	robot := FakeRobot()
 	cookies, err := robot.AuthCookie()
 	if err != nil {
 		t.Fatal(err.Error())
@@ -15,7 +15,7 @@ func TestCookies(t *testing.T) {
 }
 
 func TestStoreList(t *testing.T) {
-	robot := NewRobot("https", "192.168.3.60", "6080", "optadmin", "adminadmin")
+	robot := FakeRobot()
 	list, err := robot.StoreList()
 	if err != nil {
 		t.Fatal(err.Error())
@@ -30,7 +30,7 @@ func TestStoreList(t *testing.T) {
 }
 
 func TestDefaultStore(t *testing.T) {
-	robot := NewRobot("https", "192.168.3.60", "6080", "optadmin", "adminadmin")
+	robot := FakeRobot()
 	store, err := robot.DefaultStore()
 	if err != nil {
 		t.Fatal(err.Error())
@@ -42,7 +42,7 @@ func TestDefaultStore(t *testing.T) {
 }
 
 func TestQuotaList(t *testing.T) {
-	robot := NewRobot("https", "192.168.3.60", "6080", "optadmin", "adminadmin")
+	robot := FakeRobot()
 	list, err := robot.QuotaList("9fdc9c55-cb34-4e40-9da9-ada6d5334a6c")
 	if err != nil {
 		t.Fatal(err.Error())
@@ -52,4 +52,13 @@ func TestQuotaList(t *testing.T) {
 
 	}
 
+}
+
+func TestCreateQuota(t *testing.T) {
+	robot := FakeRobot()
+	json, err := robot.CreateQuota("9fdc9c55-cb34-4e40-9da9-ada6d5334a6c")
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	fmt.Println(json)
 }
