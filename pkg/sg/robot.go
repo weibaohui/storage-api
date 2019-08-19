@@ -14,7 +14,7 @@ type Robot struct {
 	Username     string         //管理用户名
 	Password     string         //管理密码
 	uuid         string         //磁阵系统UUID
-	storeName    string         //存储名称
+	storeName    string         //存储系统名称
 	loginCookies []*http.Cookie //登录cookie
 }
 
