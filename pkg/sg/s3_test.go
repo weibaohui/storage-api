@@ -29,7 +29,7 @@ func TestCreateS3Accounts(t *testing.T) {
 func TestCreateCertificate(t *testing.T) {
 	robot := FakeRobot4Test()
 
-	ak, sk, err := robot.CreateCertificate("2PO1B8F4QBKHSRZW1L10GHBYOJTJ8MDK")
+	ak, sk, err := robot.CreateCertificate("2PO1B8F4QBKHSRZW31W1ZLS4U5AIGCGX")
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -39,7 +39,7 @@ func TestCreateCertificate(t *testing.T) {
 func TestListCertificate(t *testing.T) {
 	robot := FakeRobot4Test()
 
-	infos, err := robot.ListCertificate("2PO1B8F4QBKHSRZW1L10GHBYOJTJ8MDK")
+	infos, err := robot.ListCertificate("2PO1B8F4QBKHSRZW31W1ZLS4U5AIGCGX")
 	if err != nil {
 		fmt.Println(err.Error())
 		return
@@ -52,7 +52,7 @@ func TestListCertificate(t *testing.T) {
 func TestDeleteAccount(t *testing.T) {
 	robot := FakeRobot4Test()
 
-	ok, err := robot.DeleteAccount("2PO1B8F4QBKHSRZW1L10GHBYOJTJ8MDK")
+	ok, err := robot.DeleteAccount("2PO1B8F4QBKHSRZW31W1ZLS4U5AIGCGX")
 	if err != nil {
 		fmt.Println(err.Error())
 		return

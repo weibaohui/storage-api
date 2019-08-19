@@ -4,18 +4,13 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"nfs-api/pkg/api"
 )
 
-type CertificateInfo struct {
-	CertificateID string `json:"certificate_id"`
-	CreateDate    string `json:"create_date"`
-	SecretKey     string `json:"secret_key"`
-	State         string `json:"state"`
-}
 type CertificateList struct {
-	AccountID       string             `json:"account_id"`
-	CertificateInfo []*CertificateInfo `json:"certificate_info"`
-	CertificateNr   int                `json:"certificate_nr"`
+	AccountID       string                 `json:"account_id"`
+	CertificateInfo []*api.CertificateInfo `json:"certificate_info"`
+	CertificateNr   int                    `json:"certificate_nr"`
 }
 type CertificateListResult struct {
 	ErrorMsg
@@ -147,7 +142,7 @@ func (r *Robot) ListAccount() ([]*s3Account, error) {
 //https://192.168.3.60:6080/commands/list_certificate.action?cmd_id=0.6751997843285937&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
 //params: {"limit":20,"start":0,"sort":"","account_id":"2PO1B8F4QBKHSRZW31W1ZLS4U5AIGCHQ"}
 //{"detail_err_msg":"","err_msg":"","err_no":0,"result":{"account_id":"2PO1B8F4QBKHSRZW31W1ZLS4U5AIGCHQ","certificate_info":[{"certificate_id":"2PO1B8F4QBKHSRZW31W1ZLS4U5AIGCHQ2EL1TO9IPQEEFKML2SA3A9G2BFJ2EKBA","create_date":"2019-08-19 17:39:51","secret_key":"b4824f981d81a67be8d9f34e89acc60c1f27a7b9","state":"S3_CERTIFICATE_ENABLE"}],"certificate_nr":1},"sync":true,"time_stamp":1566207598651,"time_zone_offset":-480,"trace_id":"[351030643522 2]"}
-func (r *Robot) ListCertificate(accountID string) ([]*CertificateInfo, error) {
+func (r *Robot) ListCertificate(accountID string) ([]*api.CertificateInfo, error) {
 	url := r.fullURL("/commands/list_certificate.action?user_name=" + r.Username + "&uuid=" + r.uuid)
 	params := make(map[string]string)
 	params["params"] = fmt.Sprintf(`{
