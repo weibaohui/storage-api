@@ -52,29 +52,44 @@ func TestQuotaList(t *testing.T) {
 	}
 }
 
-func TestCreateQuota(t *testing.T) {
+func TestCreateListDeleteQuota(t *testing.T) {
 	robot := FakeRobot()
 	jobID, err := robot.CreateQuota("/nfs", 55, 66, 77, 88)
 	if err != nil {
-		fmt.Println("创建", err.Error())
+		fmt.Println("创建配额失败", err.Error())
 		t.Fatal(err.Error())
 	}
 	done, err := robot.IsJobDone(jobID.JobIDStr)
 	if err != nil {
-		fmt.Println(err.Error())
 		t.Fatal(err.Error())
 	}
-	fmt.Println("创建结果", done)
+	fmt.Println("创建配额结果", done)
 	if done {
-		TestQuotaList(t)
+		list, err := robot.QuotaList()
+		if err != nil {
+			t.Fatal(err.Error())
+		}
+		for _, v := range list.Data.Quotas {
+			fmt.Println("删除配额,配额ID=", v.ID)
+			jobID, err := robot.DeleteQuota(v.ID)
+			if err != nil {
+				fmt.Println("删除配额,配额ID=", v.ID, err.Error())
+				t.Fatal(err.Error())
+			}
+			done, err := robot.IsJobDone(jobID.JobIDStr)
+			if err != nil {
+				t.Fatal(err.Error())
+			}
+			fmt.Println("删除结果", done)
+		}
 	}
 }
 func TestDeleteQuota(t *testing.T) {
 	robot := FakeRobot()
-	jobID, err := robot.DeleteQuota(8)
+	jobID, err := robot.DeleteQuota(9)
 	if err != nil {
 		fmt.Println("删除", err.Error())
-		t.Fatal(err.Error())
+		return
 	}
 	done, err := robot.IsJobDone(jobID.JobIDStr)
 	if err != nil {

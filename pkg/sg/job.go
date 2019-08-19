@@ -11,6 +11,7 @@ import (
 var (
 	jobStateStopped = "STOPPED"
 	jobStateRunning = "RUNNING"
+	jobStateReady   = "READY"
 )
 
 type TraceResult struct {
@@ -26,7 +27,7 @@ type JobResult struct {
 	ID               int64        `json:"id"`
 	Name             string       `json:"name"`
 	Progress         int          `json:"progress"`
-	State            string       `json:"state"` //STOPPED RUNNING 运行状态
+	State            string       `json:"state"` //STOPPED RUNNING,READY 运行状态
 	TraceResult      *TraceResult `json:"result"`
 	ResultType       string       `json:"result_type"`
 	EndTime          int          `json:"end_time"`
@@ -83,17 +84,19 @@ func (r *Robot) IsJobDone(jobID string) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	if jobResult.State == jobStateRunning {
-		time.Sleep(time.Millisecond * 500)
-		return r.IsJobDone(jobID)
-	}
-	if jobResult.State == jobStateStopped {
+	switch jobResult.State {
+	case jobStateReady:
+		return true, nil
+	case jobStateStopped:
 		traceResult := jobResult.TraceResult
 		if traceResult.ErrNo == 0 {
 			return true, nil
 		} else {
 			return false, errors.New(traceResult.ErrMsg + traceResult.DetailErrMsg)
 		}
+	case jobStateRunning:
+		time.Sleep(time.Millisecond * 500)
+		return r.IsJobDone(jobID)
 	}
-	return false, errors.New("未知错误")
+	return false, errors.New("未知错误jobResult.State=" + jobResult.State)
 }
