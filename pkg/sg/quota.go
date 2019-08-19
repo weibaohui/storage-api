@@ -133,7 +133,7 @@ func (r *Robot) CreateQuota(dir string, ips, ops, readBw, writeBw int) (bool, er
 	if err != nil {
 		return false, err
 	}
-	jobIDResult := &JobIDResult{}
+	jobIDResult := &jobIDResult{}
 	err = json.Unmarshal([]byte(str), jobIDResult)
 	if err != nil {
 		return false, err
@@ -142,7 +142,7 @@ func (r *Robot) CreateQuota(dir string, ips, ops, readBw, writeBw int) (bool, er
 		return false, errors.New(jobIDResult.ErrorString())
 	}
 
-	done, err := r.IsJobDone(jobIDResult.Data.JobIDStr)
+	done, err := r.isJobDone(jobIDResult.Data.JobIDStr)
 	return done, err
 }
 
@@ -151,15 +151,15 @@ func (r *Robot) CreateQuota(dir string, ips, ops, readBw, writeBw int) (bool, er
 //https://192.168.3.60:6080/commands/delete_quota.action?cmd_id=0.5855324522870262&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
 //rand:
 //params: {"ids":[6]}
-func (r *Robot) DeleteQuota(id int) (bool, error) {
+func (r *Robot) DeleteQuota(id string) (bool, error) {
 	url := r.fullURL("/commands/delete_quota.action?user_name=" + r.Username + "&uuid=" + r.uuid)
 	params := make(map[string]string)
-	params["params"] = fmt.Sprintf("{\"ids\":[%d]}", id)
+	params["params"] = fmt.Sprintf("{\"ids\":[%s]}", id)
 	str, err := r.PostWithLoginSession(url, params)
 	if err != nil {
 		return false, err
 	}
-	jobIDResult := &JobIDResult{}
+	jobIDResult := &jobIDResult{}
 	err = json.Unmarshal([]byte(str), jobIDResult)
 	if err != nil {
 		return false, err
@@ -167,7 +167,7 @@ func (r *Robot) DeleteQuota(id int) (bool, error) {
 	if jobIDResult.ErrNo != 0 {
 		return false, errors.New(jobIDResult.ErrorString())
 	}
-	done, err := r.IsJobDone(jobIDResult.Data.JobIDStr)
+	done, err := r.isJobDone(jobIDResult.Data.JobIDStr)
 	return done, err
 }
 

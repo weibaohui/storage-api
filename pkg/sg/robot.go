@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"nfs-api/pkg/api"
 )
 
 type Robot struct {
@@ -17,25 +18,33 @@ type Robot struct {
 	loginCookies []*http.Cookie //登录cookie
 }
 
-func FakeRobot() *Robot {
-	newRobot := NewRobot("https", "192.168.3.60", "6080", "optadmin", "adminadmin")
-	robot := newRobot.Connect()
+func FakeRobot4Test() *Robot {
+	robot := &Robot{
+		Protocol: "https",
+		Host:     "192.168.3.60",
+		Port:     "6080",
+		Username: "optadmin",
+		Password: "adminadmin",
+	}
+	robot.connect()
 	return robot
 }
 
-func NewRobot(protocol, host, port, username, password string) *Robot {
-	return &Robot{
+func NewInstance(protocol, host, port, username, password string) api.NFSApi {
+	robot := &Robot{
 		Protocol: protocol,
 		Host:     host,
 		Port:     port,
 		Username: username,
 		Password: password,
 	}
+	robot.connect()
+	return robot
 }
 func (r *Robot) fullURL(path string) (fullURL string) {
 	return fmt.Sprintf("%s://%s:%s%s", r.Protocol, r.Host, r.Port, path)
 }
-func (r *Robot) Connect() *Robot {
+func (r *Robot) connect() {
 	cookies, err := r.loginCookie()
 	if err != nil {
 		log.Fatal(err.Error())
@@ -48,5 +57,4 @@ func (r *Robot) Connect() *Robot {
 	}
 	r.storeName = store.Name
 	r.uuid = store.UUID
-	return r
 }

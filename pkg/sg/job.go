@@ -14,7 +14,7 @@ var (
 	jobStateReady   = "READY"
 )
 
-type JobResult struct {
+type jobResult struct {
 	ID               int64     `json:"id"`
 	Name             string    `json:"name"`
 	Progress         int       `json:"progress"`
@@ -26,25 +26,25 @@ type JobResult struct {
 	StartTime        int64     `json:"start_time"`
 	StartTimeForPerf int64     `json:"start_time_for_perf"`
 }
-type JobResultWrapper struct {
+type jobResultWrapper struct {
 	ErrorMsg
-	Data *JobResult `json:"result"`
+	Data *jobResult `json:"result"`
 }
 
-type JobID struct {
+type jobID struct {
 	JobID    int64  `json:"job_id"`
 	JobIDStr string `json:"job_id_str"`
 }
-type JobIDResult struct {
+type jobIDResult struct {
 	ErrorMsg
-	Data *JobID `json:"result"`
+	Data *jobID `json:"result"`
 }
 
 //获取JOB
 //POST
 //params: {"job_id_str":"1603768355463880"}
 //https://192.168.3.60:6080/commands/get_job_by_id.action?cmd_id=0.9346451830352056&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
-func (r *Robot) GetJobById(jobID string) (*JobResult, error) {
+func (r *Robot) getJobById(jobID string) (*jobResult, error) {
 	url := r.fullURL("/commands/get_job_by_id.action?user_name=" + r.Username + "&uuid=" + r.uuid)
 	params := make(map[string]string, 0)
 	params["params"] = fmt.Sprintf("{\"job_id_str\":\"%s\"}", jobID)
@@ -52,7 +52,7 @@ func (r *Robot) GetJobById(jobID string) (*JobResult, error) {
 	if err != nil {
 		return nil, err
 	}
-	wrapper := &JobResultWrapper{}
+	wrapper := &jobResultWrapper{}
 	err = json.Unmarshal([]byte(jsonStr), wrapper)
 	if err != nil {
 		return nil, err
@@ -63,8 +63,8 @@ func (r *Robot) GetJobById(jobID string) (*JobResult, error) {
 	return wrapper.Data, nil
 }
 
-func (r *Robot) IsJobDone(jobID string) (bool, error) {
-	jobResult, err := r.GetJobById(jobID)
+func (r *Robot) isJobDone(jobID string) (bool, error) {
+	jobResult, err := r.getJobById(jobID)
 	if err != nil {
 		return false, err
 	}
@@ -80,7 +80,7 @@ func (r *Robot) IsJobDone(jobID string) (bool, error) {
 		}
 	case jobStateRunning:
 		time.Sleep(time.Millisecond * 500)
-		return r.IsJobDone(jobID)
+		return r.isJobDone(jobID)
 	}
 	return false, errors.New("未知错误jobResult.State=" + jobResult.State)
 }
