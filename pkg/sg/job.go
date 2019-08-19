@@ -14,34 +14,21 @@ var (
 	jobStateReady   = "READY"
 )
 
-type TraceResult struct {
-	TraceID        string `json:"trace_id"`
-	DetailErrMsg   string `json:"detail_err_msg"`
-	TimeStamp      int    `json:"time_stamp"`
-	ErrMsg         string `json:"err_msg"`
-	TimeZoneOffset int    `json:"time_zone_offset"`
-	Sync           bool   `json:"sync"`
-	ErrNo          int    `json:"err_no"`
-}
 type JobResult struct {
-	ID               int64        `json:"id"`
-	Name             string       `json:"name"`
-	Progress         int          `json:"progress"`
-	State            string       `json:"state"` //STOPPED RUNNING,READY 运行状态
-	TraceResult      *TraceResult `json:"result"`
-	ResultType       string       `json:"result_type"`
-	EndTime          int          `json:"end_time"`
-	EndTimeForPerf   int          `json:"end_time_for_perf"`
-	StartTime        int64        `json:"start_time"`
-	StartTimeForPerf int64        `json:"start_time_for_perf"`
+	ID               int64     `json:"id"`
+	Name             string    `json:"name"`
+	Progress         int       `json:"progress"`
+	State            string    `json:"state"` //STOPPED RUNNING,READY 运行状态
+	TraceResult      *ErrorMsg `json:"result"`
+	ResultType       string    `json:"result_type"`
+	EndTime          int       `json:"end_time"`
+	EndTimeForPerf   int       `json:"end_time_for_perf"`
+	StartTime        int64     `json:"start_time"`
+	StartTimeForPerf int64     `json:"start_time_for_perf"`
 }
 type JobResultWrapper struct {
 	ErrorMsg
-	Data           *JobResult `json:"result"`
-	Sync           bool       `json:"sync"`
-	TimeStamp      int64      `json:"time_stamp"`
-	TimeZoneOffset int        `json:"time_zone_offset"`
-	TraceID        string     `json:"trace_id"`
+	Data *JobResult `json:"result"`
 }
 
 type JobID struct {
@@ -50,10 +37,7 @@ type JobID struct {
 }
 type JobIDResult struct {
 	ErrorMsg
-	Data           *JobID `json:"result"`
-	Sync           bool   `json:"sync"`
-	TimeStamp      int64  `json:"time_stamp"`
-	TimeZoneOffset int    `json:"time_zone_offset"`
+	Data *JobID `json:"result"`
 }
 
 //获取JOB
@@ -92,7 +76,7 @@ func (r *Robot) IsJobDone(jobID string) (bool, error) {
 		if traceResult.ErrNo == 0 {
 			return true, nil
 		} else {
-			return false, errors.New(traceResult.ErrMsg + traceResult.DetailErrMsg)
+			return false, errors.New(traceResult.ErrorString())
 		}
 	case jobStateRunning:
 		time.Sleep(time.Millisecond * 500)

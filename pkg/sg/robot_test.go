@@ -84,9 +84,23 @@ func TestCreateListDeleteQuota(t *testing.T) {
 		}
 	}
 }
+
+func TestCreateQuota(t *testing.T) {
+	robot := FakeRobot()
+	jobID, err := robot.CreateQuota("/nfs", 55, 66, 77, 88)
+	if err != nil {
+		fmt.Println("创建配额失败", err.Error())
+		t.Fatal(err.Error())
+	}
+	done, err := robot.IsJobDone(jobID.JobIDStr)
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	fmt.Println("创建配额结果", done)
+}
 func TestDeleteQuota(t *testing.T) {
 	robot := FakeRobot()
-	jobID, err := robot.DeleteQuota(9)
+	jobID, err := robot.DeleteQuota(38)
 	if err != nil {
 		fmt.Println("删除", err.Error())
 		return

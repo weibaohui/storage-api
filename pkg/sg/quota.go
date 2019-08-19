@@ -61,10 +61,7 @@ type QuotaQuery struct {
 }
 type QuotasList struct {
 	ErrorMsg
-	Data           *QuotaQuery `json:"result"`
-	Sync           bool        `json:"sync"`
-	TimeZoneOffset int         `json:"time_zone_offset"`
-	TraceID        string      `json:"trace_id"`
+	Data *QuotaQuery `json:"result"`
 }
 
 // 查询配额列表
