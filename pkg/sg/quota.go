@@ -68,7 +68,7 @@ type QuotasList struct {
 //POST
 //登录cookie
 //https://192.168.3.60:6080/commands/get_quota.action?cmd_id=0.5387214431814484&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
-func (r *Robot) QuotaList() (*QuotasList, error) {
+func (r *Robot) ListQuota() (*QuotasList, error) {
 	url := r.fullURL("/commands/get_quota.action?user_name=" + r.Username + "&uuid=" + r.uuid)
 
 	params := make(map[string]string)

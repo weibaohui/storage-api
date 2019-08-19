@@ -16,7 +16,7 @@ func TestCookies(t *testing.T) {
 
 func TestStoreList(t *testing.T) {
 	robot := FakeRobot()
-	list, err := robot.StoreList()
+	list, err := robot.ListStore()
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -43,7 +43,7 @@ func TestDefaultStore(t *testing.T) {
 
 func TestQuotaList(t *testing.T) {
 	robot := FakeRobot()
-	list, err := robot.QuotaList()
+	list, err := robot.ListQuota()
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -65,7 +65,7 @@ func TestCreateListDeleteQuota(t *testing.T) {
 	}
 	fmt.Println("创建配额结果", done)
 	if done {
-		list, err := robot.QuotaList()
+		list, err := robot.ListQuota()
 		if err != nil {
 			t.Fatal(err.Error())
 		}

@@ -33,7 +33,7 @@ type ZkServers struct {
 //POST
 //登录cookie
 //https://192.168.3.60:6080/install/getStorageSystemsOverview.action?cmd_id=0.4124075744799065&user_name=optadmin
-func (r *Robot) StoreList() (*StoreList, error) {
+func (r *Robot) ListStore() (*StoreList, error) {
 	url := r.fullURL("/install/getStorageSystemsOverview.action?user_name=" + r.Username)
 
 	j, err := r.PostWithLoginSession(url, nil)
@@ -52,7 +52,7 @@ func (r *Robot) StoreList() (*StoreList, error) {
 }
 
 func (r *Robot) DefaultStore() (*Store, error) {
-	list, err := r.StoreList()
+	list, err := r.ListStore()
 	if err != nil {
 		return nil, err
 	}
