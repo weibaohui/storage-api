@@ -11,6 +11,7 @@ func TestCookies(t *testing.T) {
 	if err != nil {
 		t.Fatal(err.Error())
 	}
+
 	fmt.Println(cookies)
 }
 

@@ -72,6 +72,7 @@ func (r *Robot) ListQuota() (*QuotasList, error) {
 	url := r.fullURL("/commands/get_quota.action?user_name=" + r.Username + "&uuid=" + r.uuid)
 
 	params := make(map[string]string)
+	//params: {"limit":20,"start":0,"sort":"","searches":[{"searchKey":"path","searchValue":"nfs"}]}
 	params["params"] = "{\"limit\":10000,\"start\":0,\"sort\":\"\",\"data\":[]}"
 	j, err := r.PostWithLoginSession(url, params)
 	if err != nil {

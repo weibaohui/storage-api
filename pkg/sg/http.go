@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func (r *Robot) PostWithLoginSession(fullURL string, params map[string]string) (string, error) {
+func (r *Robot) PostWithLoginSession(fullURL string, params map[string]string) (str string, err error) {
 	req := httpkit.Post(fullURL)
 	SetSkipSSLVerify(req)
 
@@ -20,7 +20,7 @@ func (r *Robot) PostWithLoginSession(fullURL string, params map[string]string) (
 	}
 
 	req.Header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-	str, err := req.String()
+	str, err = req.String()
 	if err != nil {
 		return "", err
 	}
