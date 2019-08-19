@@ -8,6 +8,10 @@ import (
 )
 
 type Quota struct {
+	ID                            int    `json:"id"`
+	Fsid                          int    `json:"fsid"`
+	Key                           int    `json:"key"`
+	Path                          string `json:"path"`
 	AuthProviderID                int    `json:"auth_provider_id"`
 	Description                   string `json:"description"`
 	FilenrGraceTime               int    `json:"filenr_grace_time"`
@@ -17,11 +21,8 @@ type Quota struct {
 	FilenrSoftThresholdOverTime   string `json:"filenr_soft_threshold_over_time"`
 	FilenrSuggestThreshold        int    `json:"filenr_suggest_threshold"`
 	FilenrUsedNr                  int    `json:"filenr_used_nr"`
-	Fsid                          int    `json:"fsid"`
-	ID                            int    `json:"id"`
 	IpsQuota                      int    `json:"ips_quota"`
 	IpsReal                       int    `json:"ips_real"`
-	Key                           int    `json:"key"`
 	LogicalGraceTime              int    `json:"logical_grace_time"`
 	LogicalHardThreshold          int    `json:"logical_hard_threshold"`
 	LogicalQuotaCalType           string `json:"logical_quota_cal_type"`
@@ -31,7 +32,6 @@ type Quota struct {
 	LogicalUsedCapacity           int    `json:"logical_used_capacity"`
 	OpsQuota                      int    `json:"ops_quota"`
 	OpsReal                       int    `json:"ops_real"`
-	Path                          string `json:"path"`
 	PhysicalCountRedundantSpace   bool   `json:"physical_count_redundant_space"`
 	PhysicalCountSnapshot         bool   `json:"physical_count_snapshot"`
 	PhysicalGraceTime             int    `json:"physical_grace_time"`
@@ -138,6 +138,9 @@ func (r *Robot) CreateQuota(dir string, ips, ops, readBw, writeBw int) (*JobID, 
 	if err != nil {
 		return nil, err
 	}
+	if jobIDResult.ErrNo != 0 {
+		return nil, errors.New(jobIDResult.ErrorString())
+	}
 	return jobIDResult.Data, nil
 }
 
@@ -158,6 +161,9 @@ func (r *Robot) DeleteQuota(id int) (*JobID, error) {
 	err = json.Unmarshal([]byte(str), jobIDResult)
 	if err != nil {
 		return nil, err
+	}
+	if jobIDResult.ErrNo != 0 {
+		return nil, errors.New(jobIDResult.ErrorString())
 	}
 	return jobIDResult.Data, nil
 }

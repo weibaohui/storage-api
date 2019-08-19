@@ -19,7 +19,7 @@ type JobResult struct {
 	Name             string    `json:"name"`
 	Progress         int       `json:"progress"`
 	State            string    `json:"state"` //STOPPED RUNNING,READY 运行状态
-	TraceResult      *ErrorMsg `json:"result"`
+	ErrorMsg         *ErrorMsg `json:"result"`
 	ResultType       string    `json:"result_type"`
 	EndTime          int       `json:"end_time"`
 	EndTimeForPerf   int       `json:"end_time_for_perf"`
@@ -72,7 +72,7 @@ func (r *Robot) IsJobDone(jobID string) (bool, error) {
 	case jobStateReady:
 		return true, nil
 	case jobStateStopped:
-		traceResult := jobResult.TraceResult
+		traceResult := jobResult.ErrorMsg
 		if traceResult.ErrNo == 0 {
 			return true, nil
 		} else {
