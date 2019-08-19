@@ -8,7 +8,7 @@ import (
 
 //操作使用的cookie
 func (r *Robot) AuthCookie() (cookies []*http.Cookie, err error) {
-	return r.mainPageCookie()
+	return r.loginCookie()
 }
 
 // 登录cookie
@@ -35,29 +35,4 @@ func (r *Robot) loginCookie() ([]*http.Cookie, error) {
 	}
 	return i, nil
 
-}
-
-//主界面的Cookie
-func (r *Robot) mainPageCookie() (cookies []*http.Cookie, err error) {
-
-	url := r.fullURL(MainPageUrl)
-	req := httpkit.Get(url)
-	SetSkipSSLVerify(req)
-	for _, v := range r.loginCookies {
-		cookies = append(cookies, v)
-		req.SetCookie(v)
-	}
-	getResp, err := req.Response()
-	if err != nil {
-		return nil, err
-	}
-	mainCookies := getResp.Cookies()
-	if mainCookies == nil {
-		return nil, errors.New("服务器没有返回主页面cookies")
-	}
-
-	for _, v := range mainCookies {
-		cookies = append(cookies, v)
-	}
-	return cookies, nil
 }
