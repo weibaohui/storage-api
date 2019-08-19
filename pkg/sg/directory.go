@@ -32,18 +32,42 @@ type DirectoryList struct {
 //https://192.168.3.60:6080/commands/create_file.action?user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
 //rand:
 //params: {"path":"ParaStor300S:/ddd","posix_permission":"rwxr-xr-x","auth_provider_id":"0","owner_user_id":0,"owner_group_id":0,"owner_user_name":"root","owner_group_name":"root"}
+
 func (r *Robot) CreateDirectory(path string) (bool, error) {
-	url := r.fullURL("/commands/create_file.action?user_name=" + r.Username + "&uuid=" + r.uuid)
-	params := make(map[string]string)
-	params["params"] = fmt.Sprintf(`{
+	config := fmt.Sprintf(`{
 	"path":"%s:%s",
-	"posix_permission":"rwxr-xr-x",
+	"posix_permission":"rwxrwxrwx",
 	"auth_provider_id":"0",
 	"owner_user_id":0,
 	"owner_group_id":0,
 	"owner_user_name":"root",
 	"owner_group_name":"root"
 	}`, r.storeName, path)
+	return r.createDirectory(config)
+}
+
+//指定目录权限
+//rwxrwxrwx
+//rwxr-xr-x
+//用户    读取 写入 执行
+//用户组  读取 写入 执行
+//其他    读取 写入 执行
+func (r *Robot) CreateDirectoryWithPermission(path, permission string) (bool, error) {
+	config := fmt.Sprintf(`{
+	"path":"%s:%s",
+	"posix_permission":"%s",
+	"auth_provider_id":"0",
+	"owner_user_id":0,
+	"owner_group_id":0,
+	"owner_user_name":"root",
+	"owner_group_name":"root"
+	}`, r.storeName, path, permission)
+	return r.createDirectory(config)
+}
+func (r *Robot) createDirectory(config string) (bool, error) {
+	url := r.fullURL("/commands/create_file.action?user_name=" + r.Username + "&uuid=" + r.uuid)
+	params := make(map[string]string)
+	params["params"] = config
 	str, err := r.PostWithLoginSession(url, params)
 	if err != nil {
 		return false, err
