@@ -188,5 +188,3 @@ func (r *Robot) DeleteQuota(id string) (ok bool, err error) {
 	done, err := r.isJobDone(jobIDResult.Data.JobIDStr)
 	return done, err
 }
-
-//todo updateQuota
