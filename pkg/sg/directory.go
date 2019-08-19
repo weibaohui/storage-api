@@ -33,7 +33,7 @@ type DirectoryList struct {
 //rand:
 //params: {"path":"ParaStor300S:/ddd","posix_permission":"rwxr-xr-x","auth_provider_id":"0","owner_user_id":0,"owner_group_id":0,"owner_user_name":"root","owner_group_name":"root"}
 
-func (r *Robot) CreateDirectory(path string) (bool, error) {
+func (r *Robot) CreateDirectory(path string) (ok bool, err error) {
 	config := fmt.Sprintf(`{
 	"path":"%s:%s",
 	"posix_permission":"rwxrwxrwx",
@@ -64,7 +64,7 @@ func (r *Robot) CreateDirectoryWithPermission(path, permission string) (bool, er
 	}`, r.storeName, path, permission)
 	return r.createDirectory(config)
 }
-func (r *Robot) createDirectory(config string) (bool, error) {
+func (r *Robot) createDirectory(config string) (ok bool, err error) {
 	url := r.fullURL("/commands/create_file.action?user_name=" + r.Username + "&uuid=" + r.uuid)
 	params := make(map[string]string)
 	params["params"] = config
@@ -89,7 +89,7 @@ func (r *Robot) createDirectory(config string) (bool, error) {
 //https://192.168.3.60:6080/commands/delete_file.action?user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
 //rand:
 //params: {"path":"ParaStor300S:/test"}
-func (r *Robot) DeleteDirectory(path string) (bool, error) {
+func (r *Robot) DeleteDirectory(path string) (ok bool, err error) {
 	url := r.fullURL("/commands/delete_file.action?user_name=" + r.Username + "&uuid=" + r.uuid)
 	params := make(map[string]string)
 	params["params"] = fmt.Sprintf(`{

@@ -13,4 +13,6 @@ func TestRun(t *testing.T) {
 		fmt.Println(err.Error())
 	}
 	fmt.Println(done)
+
+	ok, err := api.DeleteDirectory("/test/4455")
 }
