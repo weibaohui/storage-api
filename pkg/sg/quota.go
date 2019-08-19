@@ -93,7 +93,7 @@ func (r *Robot) ListQuota() (*QuotasList, error) {
 //登录cookie
 //https://192.168.3.60:6080/commands/create_quota.action?cmd_id=0.5181687999132814&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
 //readBw writeBw Mb/s
-func (r *Robot) CreateQuota(path string, ips, ops, readBw, writeBw int) (ok bool, err error) {
+func (r *Robot) CreateQuota(path string, ips, ops, readBw, writeBw int) (ok bool, quotaID string, err error) {
 	url := r.fullURL("/commands/create_quota.action?user_name=" + r.Username + "&uuid=" + r.uuid)
 	params := make(map[string]string)
 
@@ -131,19 +131,36 @@ func (r *Robot) CreateQuota(path string, ips, ops, readBw, writeBw int) (ok bool
 	params["params"] = config
 	str, err := r.PostWithLoginSession(url, params)
 	if err != nil {
-		return false, err
+		return false, "", err
 	}
 	jobIDResult := &jobIDResult{}
 	err = json.Unmarshal([]byte(str), jobIDResult)
 	if err != nil {
-		return false, err
+		return false, "", err
 	}
 	if jobIDResult.ErrNo != 0 {
-		return false, errors.New(jobIDResult.ErrorString())
+		return false, "", errors.New(jobIDResult.ErrorString())
 	}
 
-	done, err := r.isJobDone(jobIDResult.Data.JobIDStr)
-	return done, err
+	//等待job执行完成
+	_, err = r.isJobDone(jobIDResult.Data.JobIDStr)
+	if err != nil {
+		return false, "", err
+	}
+	//找到刚创建的quota
+	list, err := r.ListQuota()
+	if err != nil {
+		return false, "", err
+	}
+	if list.ErrNo != 0 {
+		return false, "", errors.New(list.ErrorString())
+	}
+	for _, q := range list.Data.Quotas {
+		if q.Path == fullPath {
+			return true, fmt.Sprintf("%d", q.ID), nil
+		}
+	}
+	return false, "", err
 }
 
 //删除配额

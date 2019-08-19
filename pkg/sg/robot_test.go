@@ -43,13 +43,13 @@ func TestDefaultStore(t *testing.T) {
 
 func TestCreateListDeleteQuota(t *testing.T) {
 	robot := FakeRobot4Test()
-	done, err := robot.CreateQuota("/nfs", 55, 66, 77, 88)
+	done, quotaid, err := robot.CreateQuota("/nfs", 55, 66, 77, 88)
 	if err != nil {
 		fmt.Println("创建配额失败", err.Error())
 		t.Fatal(err.Error())
 	}
 
-	fmt.Println("创建配额结果", done)
+	fmt.Println("创建配额结果", done, quotaid)
 	if done {
 		list, err := robot.ListQuota()
 		if err != nil {
@@ -78,16 +78,16 @@ func TestQuotaList(t *testing.T) {
 }
 func TestCreateQuota(t *testing.T) {
 	robot := FakeRobot4Test()
-	done, err := robot.CreateQuota("/nfs", 55, 66, 77, 88)
+	done, quotaid, err := robot.CreateQuota("/nfs", 55, 66, 77, 88)
 	if err != nil {
 		fmt.Println("创建配额失败", err.Error())
 		t.Fatal(err.Error())
 	}
-	fmt.Println("创建配额结果", done)
+	fmt.Println("创建配额结果", done, quotaid)
 }
 func TestDeleteQuota(t *testing.T) {
 	robot := FakeRobot4Test()
-	done, err := robot.DeleteQuota(43)
+	done, err := robot.DeleteQuota("43")
 	if err != nil {
 		fmt.Println("删除", err.Error())
 		return
