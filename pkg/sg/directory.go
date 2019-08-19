@@ -18,7 +18,7 @@ type DetailFiles struct {
 	PosixPath       string `json:"posix_path"` // /test/123
 	PosixPermission string `json:"posix_permission"`
 	Size            int    `json:"size"`
-	Type            string `json:"type"` //DIR
+	Type            string `json:"type"` //DIR FILE
 }
 type DirectoryList struct {
 	ErrorMsg
@@ -115,20 +115,10 @@ func (r *Robot) DeleteDirectory(path string) (bool, error) {
 //非空目录不能删除，需要逐级删除
 //POST
 //https://192.168.3.60:6080/commands/get_file_list.action?cmd_id=0.7323753691986996&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
-// rand:
-//params: {"path":"ParaStor300S:/test"}
-func (r *Robot) ListDirectory(path string) ([]*DetailFiles, error) {
+func (r *Robot) listDirectory(config string) ([]*DetailFiles, error) {
 	url := r.fullURL("/commands/get_file_list.action?user_name=" + r.Username + "&uuid=" + r.uuid)
 	params := make(map[string]string)
-	params["params"] = fmt.Sprintf(`{
-	"limit":1000000,
-	"start":0,
-	"sort":"",
-	"path":"%s:%s",	
-	"display_details":true,
-	"type":"DIR",
-	"searches":[{"searchKey":"name","searchValue":""}]
-	}`, r.storeName, path)
+	params["params"] = config
 
 	str, err := r.PostWithLoginSession(url, params)
 	if err != nil {
@@ -147,5 +137,34 @@ func (r *Robot) ListDirectory(path string) ([]*DetailFiles, error) {
 		v.PosixPath = strings.TrimPrefix(v.Path, r.storeName+":")
 	}
 	return result.Data.DetailFiles, nil
+}
+
+//列表显示目录
+func (r *Robot) ListDirectory(path string) ([]*DetailFiles, error) {
+
+	config := fmt.Sprintf(`{
+	"limit":1000000,
+	"start":0,
+	"sort":"",
+	"path":"%s:%s",	
+	"display_details":true,
+	"type":"DIR",
+	"searches":[{"searchKey":"name","searchValue":""}]
+	}`, r.storeName, path)
+
+	return r.listDirectory(config)
+}
+
+//列表显示目录及文件
+func (r *Robot) ListDirectoryWithFiles(path string) ([]*DetailFiles, error) {
+	config := fmt.Sprintf(`{
+	"limit":1000000,
+	"start":0,
+	"sort":"",
+	"path":"%s:%s",	
+	"display_details":true,
+	"searches":[{"searchKey":"name","searchValue":""}]
+	}`, r.storeName, path)
+	return r.listDirectory(config)
 
 }

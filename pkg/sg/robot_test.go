@@ -146,13 +146,25 @@ func TestCreateDirectory(t *testing.T) {
 }
 func TestListDirectory(t *testing.T) {
 	robot := FakeRobot()
-	path := "/test/"
+	path := "/nfs/"
 	list, err := robot.ListDirectory(path)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 	for _, v := range list {
-		fmt.Printf("%s\t%s\t%s  \n", v.PosixPath, v.Path, v.PosixPermission)
+		fmt.Printf("%s\t%s\t%s \t%s \n", v.PosixPath, v.Path, v.PosixPermission, v.Type)
+	}
+}
+func TestListDirectoryWithFiles(t *testing.T) {
+	robot := FakeRobot()
+	path := "/nfs/"
+	list, err := robot.ListDirectoryWithFiles(path)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	for _, v := range list {
+		fmt.Printf("%s\t%s\t%s \t%s \n", v.PosixPath, v.Path, v.PosixPermission, v.Type)
 	}
 }
