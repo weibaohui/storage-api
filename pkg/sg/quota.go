@@ -167,3 +167,5 @@ func (r *Robot) DeleteQuota(id int) (*JobID, error) {
 	}
 	return jobIDResult.Data, nil
 }
+
+//todo updateQuota
