@@ -96,7 +96,7 @@ func (r *Robot) QuotaList() (*QuotasList, error) {
 //登录cookie
 //https://192.168.3.60:6080/commands/create_quota.action?cmd_id=0.5181687999132814&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
 //readBw writeBw Mb/s
-func (r *Robot) CreateQuota(dir string, ips, ops, readBw, writeBw int) (string, error) {
+func (r *Robot) CreateQuota(dir string, ips, ops, readBw, writeBw int) (*JobID, error) {
 	url := r.fullURL("/commands/create_quota.action?user_name=" + r.Username + "&uuid=" + r.uuid)
 	params := make(map[string]string)
 
@@ -129,20 +129,38 @@ func (r *Robot) CreateQuota(dir string, ips, ops, readBw, writeBw int) (string, 
 	"write_bandwidth_quota":"%d",
 	"user_or_group_id":""
 	}]}`
-
 	path := fmt.Sprintf("%s:%s", r.storeName, dir)
 	config := fmt.Sprintf(s, path, ips, ops, readBw, writeBw)
 	params["params"] = config
-	j, err := r.PostWithLoginSession(url, params)
+	str, err := r.PostWithLoginSession(url, params)
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return j, nil
+	jobIDResult := &JobIDResult{}
+	err = json.Unmarshal([]byte(str), jobIDResult)
+	if err != nil {
+		return nil, err
+	}
+	return jobIDResult.Data, nil
 }
 
 //删除配额
 //POST
 //https://192.168.3.60:6080/commands/delete_quota.action?cmd_id=0.5855324522870262&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
-func (r *Robot) DeleteQuota() {
-	//
+//rand:
+//params: {"ids":[6]}
+func (r *Robot) DeleteQuota(id int) (*JobID, error) {
+	url := r.fullURL("/commands/delete_quota.action?user_name=" + r.Username + "&uuid=" + r.uuid)
+	params := make(map[string]string)
+	params["params"] = fmt.Sprintf("{\"ids\":[%d]}", id)
+	str, err := r.PostWithLoginSession(url, params)
+	if err != nil {
+		return nil, err
+	}
+	jobIDResult := &JobIDResult{}
+	err = json.Unmarshal([]byte(str), jobIDResult)
+	if err != nil {
+		return nil, err
+	}
+	return jobIDResult.Data, nil
 }

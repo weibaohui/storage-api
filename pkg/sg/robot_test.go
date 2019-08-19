@@ -48,16 +48,37 @@ func TestQuotaList(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 	for _, v := range list.Data.Quotas {
-		fmt.Println(v.ID, v.Fsid)
+		fmt.Println(v.ID)
 	}
-
 }
 
 func TestCreateQuota(t *testing.T) {
 	robot := FakeRobot()
-	json, err := robot.CreateQuota("/nfs", 55, 66, 77, 88)
+	jobID, err := robot.CreateQuota("/nfs", 55, 66, 77, 88)
 	if err != nil {
+		fmt.Println("创建", err.Error())
 		t.Fatal(err.Error())
 	}
-	fmt.Println(json)
+	done, err := robot.IsJobDone(jobID.JobIDStr)
+	if err != nil {
+		fmt.Println(err.Error())
+		t.Fatal(err.Error())
+	}
+	fmt.Println("创建结果", done)
+	if done {
+		TestQuotaList(t)
+	}
+}
+func TestDeleteQuota(t *testing.T) {
+	robot := FakeRobot()
+	jobID, err := robot.DeleteQuota(8)
+	if err != nil {
+		fmt.Println("删除", err.Error())
+		t.Fatal(err.Error())
+	}
+	done, err := robot.IsJobDone(jobID.JobIDStr)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	fmt.Println("删除结果", done)
 }

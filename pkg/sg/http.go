@@ -19,6 +19,7 @@ func (r *Robot) PostWithLoginSession(fullURL string, params map[string]string) (
 		req.Param(k, v)
 	}
 
+	req.Header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
 	str, err := req.String()
 	if err != nil {
 		return "", err
