@@ -51,7 +51,7 @@ type Quota struct {
 	WriteBandwidthQuota           int    `json:"write_bandwidth_quota"`
 	WriteBandwidthReal            int    `json:"write_bandwidth_real"`
 }
-type QuotaQuery struct {
+type QuotaPage struct {
 	Limit    int           `json:"limit"`
 	Quotas   []*Quota      `json:"quotas"`
 	Searches []interface{} `json:"searches"`
@@ -61,7 +61,7 @@ type QuotaQuery struct {
 }
 type QuotasList struct {
 	ErrorMsg
-	Data *QuotaQuery `json:"result"`
+	Data *QuotaPage `json:"result"`
 }
 
 // 查询配额列表
@@ -88,12 +88,12 @@ func (r *Robot) ListQuota() (*QuotasList, error) {
 	return list, nil
 }
 
-//设置配额
+//设置配额,0为不限制
 //POST
 //登录cookie
 //https://192.168.3.60:6080/commands/create_quota.action?cmd_id=0.5181687999132814&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
 //readBw writeBw Mb/s
-func (r *Robot) CreateQuota(dir string, ips, ops, readBw, writeBw int) (*JobID, error) {
+func (r *Robot) CreateQuota(dir string, ips, ops, readBw, writeBw int) (bool, error) {
 	url := r.fullURL("/commands/create_quota.action?user_name=" + r.Username + "&uuid=" + r.uuid)
 	params := make(map[string]string)
 
@@ -131,17 +131,19 @@ func (r *Robot) CreateQuota(dir string, ips, ops, readBw, writeBw int) (*JobID, 
 	params["params"] = config
 	str, err := r.PostWithLoginSession(url, params)
 	if err != nil {
-		return nil, err
+		return false, err
 	}
 	jobIDResult := &JobIDResult{}
 	err = json.Unmarshal([]byte(str), jobIDResult)
 	if err != nil {
-		return nil, err
+		return false, err
 	}
 	if jobIDResult.ErrNo != 0 {
-		return nil, errors.New(jobIDResult.ErrorString())
+		return false, errors.New(jobIDResult.ErrorString())
 	}
-	return jobIDResult.Data, nil
+
+	done, err := r.IsJobDone(jobIDResult.Data.JobIDStr)
+	return done, err
 }
 
 //删除配额
@@ -149,23 +151,24 @@ func (r *Robot) CreateQuota(dir string, ips, ops, readBw, writeBw int) (*JobID, 
 //https://192.168.3.60:6080/commands/delete_quota.action?cmd_id=0.5855324522870262&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
 //rand:
 //params: {"ids":[6]}
-func (r *Robot) DeleteQuota(id int) (*JobID, error) {
+func (r *Robot) DeleteQuota(id int) (bool, error) {
 	url := r.fullURL("/commands/delete_quota.action?user_name=" + r.Username + "&uuid=" + r.uuid)
 	params := make(map[string]string)
 	params["params"] = fmt.Sprintf("{\"ids\":[%d]}", id)
 	str, err := r.PostWithLoginSession(url, params)
 	if err != nil {
-		return nil, err
+		return false, err
 	}
 	jobIDResult := &JobIDResult{}
 	err = json.Unmarshal([]byte(str), jobIDResult)
 	if err != nil {
-		return nil, err
+		return false, err
 	}
 	if jobIDResult.ErrNo != 0 {
-		return nil, errors.New(jobIDResult.ErrorString())
+		return false, errors.New(jobIDResult.ErrorString())
 	}
-	return jobIDResult.Data, nil
+	done, err := r.IsJobDone(jobIDResult.Data.JobIDStr)
+	return done, err
 }
 
 //todo updateQuota
