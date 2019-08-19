@@ -111,3 +111,36 @@ func TestDeleteQuota(t *testing.T) {
 	}
 	fmt.Println("删除结果", done)
 }
+
+func TestCreateDirectory(t *testing.T) {
+	robot := FakeRobot()
+	path := "/test5/dddttt"
+	created, err := robot.CreateDirectory(path)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	if created {
+		fmt.Println(path, "创建成功")
+		deleted, err := robot.DeleteDirectory(path)
+		if err != nil {
+			fmt.Println(err.Error())
+			return
+		}
+		fmt.Println(path, "删除结果", deleted)
+	}
+	fmt.Println(created)
+}
+
+func TestListDirectory(t *testing.T) {
+	robot := FakeRobot()
+	path := "/test/"
+	list, err := robot.ListDirectory(path)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	for _, v := range list {
+		fmt.Printf("%s %s \n", v.PosixPath, v.Path)
+	}
+}
