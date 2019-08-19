@@ -30,7 +30,7 @@ func FakeRobot4Test() *Robot {
 	return robot
 }
 
-func NewInstance(protocol, host, port, username, password string) api.NFSApi {
+func NewInstance(protocol, host, port, username, password string) api.Api {
 	robot := &Robot{
 		Protocol: protocol,
 		Host:     host,
