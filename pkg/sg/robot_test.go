@@ -2,11 +2,12 @@ package sg
 
 import (
 	"fmt"
+	"nfs-api/pkg/sg/common"
 	"testing"
 )
 
 func TestCookies(t *testing.T) {
-	robot := FakeRobot4Test()
+	robot := common.FakeRobot4Test()
 	cookies, err := robot.AuthCookie()
 	if err != nil {
 		t.Fatal(err.Error())
@@ -16,7 +17,7 @@ func TestCookies(t *testing.T) {
 }
 
 func TestStoreList(t *testing.T) {
-	robot := FakeRobot4Test()
+	robot := common.FakeRobot4Test()
 	list, err := robot.ListStore()
 	if err != nil {
 		t.Fatal(err.Error())
@@ -31,7 +32,7 @@ func TestStoreList(t *testing.T) {
 }
 
 func TestDefaultStore(t *testing.T) {
-	robot := FakeRobot4Test()
+	robot := common.FakeRobot4Test()
 	store, err := robot.DefaultStore()
 	if err != nil {
 		t.Fatal(err.Error())
@@ -43,7 +44,7 @@ func TestDefaultStore(t *testing.T) {
 }
 
 func TestCreateListDeleteQuota(t *testing.T) {
-	robot := FakeRobot4Test()
+	robot := common.FakeRobot4Test()
 	done, quotaid, err := robot.CreateQuota("/nfs", 55, 66, 77, 88)
 	if err != nil {
 		fmt.Println("创建配额失败", err.Error())
@@ -68,7 +69,7 @@ func TestCreateListDeleteQuota(t *testing.T) {
 	}
 }
 func TestQuotaList(t *testing.T) {
-	robot := FakeRobot4Test()
+	robot := common.FakeRobot4Test()
 	list, err := robot.ListQuota()
 	if err != nil {
 		t.Fatal(err.Error())
@@ -78,7 +79,7 @@ func TestQuotaList(t *testing.T) {
 	}
 }
 func TestCreateQuota(t *testing.T) {
-	robot := FakeRobot4Test()
+	robot := common.FakeRobot4Test()
 	done, quotaid, err := robot.CreateQuota("/nfs", 55, 66, 77, 88)
 	if err != nil {
 		fmt.Println("创建配额失败", err.Error())
@@ -87,7 +88,7 @@ func TestCreateQuota(t *testing.T) {
 	fmt.Println("创建配额结果", done, quotaid)
 }
 func TestDeleteQuota(t *testing.T) {
-	robot := FakeRobot4Test()
+	robot := common.FakeRobot4Test()
 	done, err := robot.DeleteQuota("43")
 	if err != nil {
 		fmt.Println("删除", err.Error())
@@ -97,7 +98,7 @@ func TestDeleteQuota(t *testing.T) {
 }
 
 func TestCreateDeleteDirectory(t *testing.T) {
-	robot := FakeRobot4Test()
+	robot := common.FakeRobot4Test()
 	path := "/test5/dddttt"
 	created, err := robot.CreateDirectory(path)
 	if err != nil {
@@ -116,7 +117,7 @@ func TestCreateDeleteDirectory(t *testing.T) {
 	fmt.Println(created)
 }
 func TestCreateDirectory(t *testing.T) {
-	robot := FakeRobot4Test()
+	robot := common.FakeRobot4Test()
 	path := "/test/dddttt55d"
 	created, err := robot.CreateDirectoryWithPermission(path, "rwxrw-rw-")
 	if err != nil {
@@ -129,7 +130,7 @@ func TestCreateDirectory(t *testing.T) {
 	}
 }
 func TestListDirectory(t *testing.T) {
-	robot := FakeRobot4Test()
+	robot := common.FakeRobot4Test()
 	path := "/nfs/"
 	list, err := robot.ListDirectory(path)
 	if err != nil {
@@ -141,7 +142,7 @@ func TestListDirectory(t *testing.T) {
 	}
 }
 func TestListDirectoryWithFiles(t *testing.T) {
-	robot := FakeRobot4Test()
+	robot := common.FakeRobot4Test()
 	path := "/nfs/"
 	list, err := robot.ListDirectoryWithFiles(path)
 	if err != nil {

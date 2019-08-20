@@ -1,13 +1,14 @@
 // 存储系统管理，包括 列表
-package sg
+package common
 
 import (
 	"encoding/json"
 	"errors"
+	"nfs-api/pkg/sg"
 )
 
 type StoreList struct {
-	ErrorMsg
+	sg.ErrorMsg
 	Data []*Store `json:"result"`
 }
 

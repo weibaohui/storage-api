@@ -44,7 +44,7 @@ type jobIDResult struct {
 //POST
 //params: {"job_id_str":"1603768355463880"}
 //https://192.168.3.60:6080/commands/get_job_by_id.action?cmd_id=0.9346451830352056&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
-func (r *Robot) getJobById(jobID string) (*jobResult, error) {
+func (r *common.Robot) getJobById(jobID string) (*jobResult, error) {
 	url := r.fullURL("/commands/get_job_by_id.action?user_name=" + r.Username + "&uuid=" + r.uuid)
 	params := make(map[string]string, 0)
 	params["params"] = fmt.Sprintf("{\"job_id_str\":\"%s\"}", jobID)
@@ -63,7 +63,7 @@ func (r *Robot) getJobById(jobID string) (*jobResult, error) {
 	return wrapper.Data, nil
 }
 
-func (r *Robot) isJobDone(jobID string) (bool, error) {
+func (r *common.Robot) isJobDone(jobID string) (bool, error) {
 	jobResult, err := r.getJobById(jobID)
 	if err != nil {
 		return false, err

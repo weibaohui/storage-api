@@ -1,4 +1,4 @@
-package sg
+package common
 
 import (
 	"crypto/tls"
