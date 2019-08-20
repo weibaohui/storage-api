@@ -53,7 +53,7 @@ func TestDeleteDirectory(t *testing.T) {
 }
 
 func TestDeleteQuota(t *testing.T) {
-	quotaId := "60"
+	quotaId := "66"
 	if ok, err := nfsApi.DeleteQuota(quotaId); err == nil {
 		fmt.Println("删除配额结果", ok)
 	} else {

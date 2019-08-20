@@ -3,7 +3,6 @@ package common
 
 import (
 	"encoding/json"
-	"errors"
 	"nfs-api/pkg/sg"
 )
 
@@ -40,15 +39,15 @@ func (r *Instance) ListStore() (*StoreList, error) {
 	if err != nil {
 		return nil, err
 	}
-	list := &StoreList{}
-	err = json.Unmarshal([]byte(str), list)
+	result := &StoreList{}
+	err = json.Unmarshal([]byte(str), result)
 	if err != nil {
 		return nil, err
 	}
-	if list.ErrNo != 0 {
-		return nil, errors.New(list.ErrorString())
+	if result.ErrNo != 0 {
+		return nil, result.Error()
 	}
-	return list, nil
+	return result, nil
 }
 
 func (r *Instance) DefaultStore() (*Store, error) {

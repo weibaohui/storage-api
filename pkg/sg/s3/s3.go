@@ -2,7 +2,6 @@ package s3
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"nfs-api/pkg/api"
 	"nfs-api/pkg/sg"
@@ -70,7 +69,7 @@ func (r *instance) CreateAccount(name string, quota int) (accountID string, err 
 		return "", err
 	}
 	if result.ErrNo != 0 {
-		return "", errors.New(result.ErrorString())
+		return "", result.Error()
 	}
 	return result.S3Account.AccountID, nil
 }
@@ -95,7 +94,7 @@ func (r *instance) CreateCertificate(accountID string) (ak, sk string, err error
 		return "", "", err
 	}
 	if result.ErrNo != 0 {
-		return "", "", errors.New(result.ErrorString())
+		return "", "", result.Error()
 	}
 	return result.Certificate.CertificateID, result.Certificate.SecretKey, nil
 }
@@ -125,7 +124,7 @@ func (r *instance) ListAccount() ([]*api.Account, error) {
 		return nil, err
 	}
 	if result.ErrNo != 0 {
-		return nil, errors.New(result.ErrorString())
+		return nil, result.Error()
 	}
 	return result.Data.Accounts, nil
 }
@@ -153,7 +152,7 @@ func (r *instance) ListCertificate(accountID string) ([]*api.CertificateInfo, er
 		return nil, err
 	}
 	if result.ErrNo != 0 {
-		return nil, errors.New(result.ErrorString())
+		return nil, result.Error()
 	}
 	return result.Data.CertificateInfo, nil
 }
@@ -180,7 +179,7 @@ func (r *instance) DeleteCertificate(certificateID string) (ok bool, err error) 
 		return false, err
 	}
 	if result.ErrNo != 0 {
-		return false, errors.New(result.ErrorString())
+		return false, result.Error()
 	}
 	return true, nil
 }
@@ -220,7 +219,7 @@ func (r *instance) DeleteAccount(accountID string) (ok bool, err error) {
 		return false, err
 	}
 	if result.ErrNo != 0 {
-		return false, errors.New(result.ErrorString())
+		return false, result.Error()
 	}
 	return true, nil
 }

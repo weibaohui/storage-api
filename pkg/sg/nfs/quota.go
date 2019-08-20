@@ -78,15 +78,15 @@ func (r *instance) ListQuota() (*QuotasList, error) {
 	if err != nil {
 		return nil, err
 	}
-	list := &QuotasList{}
-	err = json.Unmarshal([]byte(j), list)
+	result := &QuotasList{}
+	err = json.Unmarshal([]byte(j), result)
 	if err != nil {
 		return nil, err
 	}
-	if list.ErrNo != 0 {
-		return nil, errors.New(list.ErrorString())
+	if result.ErrNo != 0 {
+		return nil, result.Error()
 	}
-	return list, nil
+	return result, nil
 }
 
 //设置配额,0为不限制
@@ -134,17 +134,17 @@ func (r *instance) CreateQuota(path string, ips, ops, readBw, writeBw int) (ok b
 	if err != nil {
 		return false, "", err
 	}
-	jobIDResult := &jobIDResult{}
-	err = json.Unmarshal([]byte(str), jobIDResult)
+	result := &jobIDResult{}
+	err = json.Unmarshal([]byte(str), result)
 	if err != nil {
 		return false, "", err
 	}
-	if jobIDResult.ErrNo != 0 {
-		return false, "", errors.New(jobIDResult.ErrorString())
+	if result.ErrNo != 0 {
+		return false, "", result.Error()
 	}
 
 	//等待job执行完成
-	_, err = r.isJobDone(jobIDResult.Data.JobIDStr)
+	_, err = r.isJobDone(result.Data.JobIDStr)
 	if err != nil {
 		return false, "", err
 	}
@@ -154,7 +154,7 @@ func (r *instance) CreateQuota(path string, ips, ops, readBw, writeBw int) (ok b
 		return false, "", err
 	}
 	if list.ErrNo != 0 {
-		return false, "", errors.New(list.ErrorString())
+		return false, "", list.Error()
 	}
 	for _, q := range list.Data.Quotas {
 		if q.Path == fullPath {

@@ -1,6 +1,9 @@
 package sg
 
-import "fmt"
+import (
+	"errors"
+	"fmt"
+)
 
 type ErrorMsg struct {
 	DetailErrMsg   interface{} `json:"detail_err_msg"`
@@ -14,4 +17,7 @@ type ErrorMsg struct {
 
 func (s *ErrorMsg) ErrorString() string {
 	return fmt.Sprintf("%d,%s,%s,%v", s.ErrNo, s.ErrMsg, s.DetailErrMsg, s.TimeStamp)
+}
+func (s *ErrorMsg) Error() error {
+	return errors.New(s.ErrorString())
 }

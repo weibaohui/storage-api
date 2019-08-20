@@ -2,7 +2,6 @@ package nfs
 
 import (
 	"encoding/json"
-	"errors"
 	"fmt"
 	"nfs-api/pkg/api"
 	"nfs-api/pkg/sg"
@@ -67,7 +66,7 @@ func (r *instance) createDirectory(config string) (ok bool, err error) {
 		return false, err
 	}
 	if result.ErrNo != 0 {
-		return false, errors.New(result.ErrorString())
+		return false, result.Error()
 	}
 
 	return true, nil
@@ -95,7 +94,7 @@ func (r *instance) DeleteDirectory(path string) (ok bool, err error) {
 		return false, err
 	}
 	if result.ErrNo != 0 {
-		return false, errors.New(result.ErrorString())
+		return false, result.Error()
 	}
 
 	return true, nil
@@ -119,7 +118,7 @@ func (r *instance) listDirectory(config string) ([]*api.DetailFiles, error) {
 		return nil, err
 	}
 	if result.ErrNo != 0 {
-		return nil, errors.New(result.ErrorString())
+		return nil, result.Error()
 	}
 	for _, v := range result.Data.DetailFiles {
 		//去除存储服务器名称

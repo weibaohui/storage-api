@@ -53,15 +53,15 @@ func (r *instance) getJobById(jobID string) (*jobResult, error) {
 	if err != nil {
 		return nil, err
 	}
-	wrapper := &jobResultWrapper{}
-	err = json.Unmarshal([]byte(jsonStr), wrapper)
+	result := &jobResultWrapper{}
+	err = json.Unmarshal([]byte(jsonStr), result)
 	if err != nil {
 		return nil, err
 	}
-	if wrapper.ErrNo != 0 {
-		return nil, errors.New(wrapper.ErrorString())
+	if result.ErrNo != 0 {
+		return nil, result.Error()
 	}
-	return wrapper.Data, nil
+	return result.Data, nil
 }
 
 func (r *instance) isJobDone(jobID string) (bool, error) {
@@ -73,11 +73,11 @@ func (r *instance) isJobDone(jobID string) (bool, error) {
 	case jobStateReady:
 		return true, nil
 	case jobStateStopped:
-		traceResult := jobResult.ErrorMsg
-		if traceResult.ErrNo == 0 {
+		result := jobResult.ErrorMsg
+		if result.ErrNo == 0 {
 			return true, nil
 		} else {
-			return false, errors.New(traceResult.ErrorString())
+			return false, result.Error()
 		}
 	case jobStateRunning:
 		time.Sleep(time.Millisecond * 500)
