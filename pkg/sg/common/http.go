@@ -33,9 +33,13 @@ func (i *Instance) PostWithLoginSession(fullURL string, params map[string]string
 			i.connect()
 			return i.PostWithLoginSession(fullURL, params)
 		}
+
 		return "", errors.New("cookie失效，请检查登录参数")
 	}
-
+	//重置重新登录次数
+	if i.retryLogin > 0 {
+		i.retryLogin = 0
+	}
 	return str, err
 }
 
