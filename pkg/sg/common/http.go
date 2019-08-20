@@ -4,12 +4,13 @@ import (
 	"crypto/tls"
 	"errors"
 	"github.com/weibaohui/go-kit/httpkit"
+	"log"
 	"net/http"
 	"strings"
 )
 
 func (r *Instance) PostWithLoginSession(fullURL string, params map[string]string) (str string, err error) {
-	req := httpkit.Post(fullURL).EnableDebug()
+	req := httpkit.Post(fullURL)
 	SetSkipSSLVerify(req)
 
 	for _, v := range r.loginCookies {
@@ -26,6 +27,7 @@ func (r *Instance) PostWithLoginSession(fullURL string, params map[string]string
 	}
 	if strings.Contains(str, "<script>window.top.location='/'</script>") {
 		if r.retryLogin <= 3 {
+			log.Println("进行重新登录", r.retryLogin)
 			//自动进行重新登录
 			r.retryLogin += 1
 			r.connect()
