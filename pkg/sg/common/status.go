@@ -29,9 +29,9 @@ type ClusterStatusResult struct {
 }
 
 //集群状态
-func (r *Instance) ClusterStatus() (status *ClusterStatus, err error) {
-	url := r.Command("/commands/get_cluster_overview.action")
-	str, err := r.PostWithLoginSession(url, nil)
+func (i *Instance) ClusterStatus() (status *ClusterStatus, err error) {
+	url := i.Command("/commands/get_cluster_overview.action")
+	str, err := i.PostWithLoginSession(url, nil)
 	result := &ClusterStatusResult{}
 	err = json.Unmarshal([]byte(str), result)
 	if err != nil {

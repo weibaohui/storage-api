@@ -69,12 +69,12 @@ type QuotasList struct {
 //POST
 //登录cookie
 //https://192.168.3.60:6080/commands/get_quota.action?cmd_id=0.5387214431814484&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
-func (r *instance) ListQuota() (*QuotasList, error) {
-	url := r.common.Command("/commands/get_quota.action")
+func (i *instance) ListQuota() (*QuotasList, error) {
+	url := i.common.Command("/commands/get_quota.action")
 	params := make(map[string]string)
 	//params: {"limit":20,"start":0,"sort":"","searches":[{"searchKey":"path","searchValue":"nfs"}]}
 	params["params"] = "{\"limit\":10000,\"start\":0,\"sort\":\"\",\"data\":[]}"
-	j, err := r.common.PostWithLoginSession(url, params)
+	j, err := i.common.PostWithLoginSession(url, params)
 	if err != nil {
 		return nil, err
 	}
@@ -94,8 +94,8 @@ func (r *instance) ListQuota() (*QuotasList, error) {
 //登录cookie
 //https://192.168.3.60:6080/commands/create_quota.action?cmd_id=0.5181687999132814&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
 //readBw writeBw Mb/s
-func (r *instance) CreateQuota(path string, ips, ops, readBw, writeBw int) (ok bool, quotaID string, err error) {
-	url := r.common.Command("/commands/create_quota.action")
+func (i *instance) CreateQuota(path string, ips, ops, readBw, writeBw int) (ok bool, quotaID string, err error) {
+	url := i.common.Command("/commands/create_quota.action")
 	params := make(map[string]string)
 
 	s := `{"quotas":[{
@@ -130,7 +130,7 @@ func (r *instance) CreateQuota(path string, ips, ops, readBw, writeBw int) (ok b
 	fullPath := fmt.Sprintf("%s:%s", r.common.StoreName, path)
 	config := fmt.Sprintf(s, fullPath, ips, ops, readBw, writeBw)
 	params["params"] = config
-	str, err := r.common.PostWithLoginSession(url, params)
+	str, err := i.common.PostWithLoginSession(url, params)
 	if err != nil {
 		return false, "", err
 	}
@@ -144,12 +144,12 @@ func (r *instance) CreateQuota(path string, ips, ops, readBw, writeBw int) (ok b
 	}
 
 	//等待job执行完成
-	_, err = r.isJobDone(result.Data.JobIDStr)
+	_, err = i.isJobDone(result.Data.JobIDStr)
 	if err != nil {
 		return false, "", err
 	}
 	//找到刚创建的quota
-	list, err := r.ListQuota()
+	list, err := i.ListQuota()
 	if err != nil {
 		return false, "", err
 	}
@@ -170,11 +170,11 @@ func (r *instance) CreateQuota(path string, ips, ops, readBw, writeBw int) (ok b
 //https://192.168.3.60:6080/commands/delete_quota.action?cmd_id=0.5855324522870262&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
 //rand:
 //params: {"ids":[6]}
-func (r *instance) DeleteQuota(id string) (ok bool, err error) {
-	url := r.common.Command("/commands/delete_quota.action")
+func (i *instance) DeleteQuota(id string) (ok bool, err error) {
+	url := i.common.Command("/commands/delete_quota.action")
 	params := make(map[string]string)
 	params["params"] = fmt.Sprintf("{\"ids\":[%s]}", id)
-	str, err := r.common.PostWithLoginSession(url, params)
+	str, err := i.common.PostWithLoginSession(url, params)
 	if err != nil {
 		return false, err
 	}
@@ -186,6 +186,6 @@ func (r *instance) DeleteQuota(id string) (ok bool, err error) {
 	if jobIDResult.ErrNo != 0 {
 		return false, errors.New(jobIDResult.ErrorString())
 	}
-	done, err := r.isJobDone(jobIDResult.Data.JobIDStr)
+	done, err := i.isJobDone(jobIDResult.Data.JobIDStr)
 	return done, err
 }

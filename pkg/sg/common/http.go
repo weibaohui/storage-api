@@ -9,11 +9,11 @@ import (
 	"strings"
 )
 
-func (r *Instance) PostWithLoginSession(fullURL string, params map[string]string) (str string, err error) {
+func (i *Instance) PostWithLoginSession(fullURL string, params map[string]string) (str string, err error) {
 	req := httpkit.Post(fullURL)
 	SetSkipSSLVerify(req)
 
-	for _, v := range r.loginCookies {
+	for _, v := range i.loginCookies {
 		req.SetCookie(v)
 	}
 	for k, v := range params {
@@ -26,12 +26,12 @@ func (r *Instance) PostWithLoginSession(fullURL string, params map[string]string
 		return "", err
 	}
 	if strings.Contains(str, "<script>window.top.location='/'</script>") {
-		if r.retryLogin <= 3 {
-			log.Println("进行重新登录", r.retryLogin)
+		if i.retryLogin <= 3 {
+			log.Println("进行重新登录", i.retryLogin)
 			//自动进行重新登录
-			r.retryLogin += 1
-			r.connect()
-			return r.PostWithLoginSession(fullURL, params)
+			i.retryLogin += 1
+			i.connect()
+			return i.PostWithLoginSession(fullURL, params)
 		}
 		return "", errors.New("cookie失效，请检查登录参数")
 	}

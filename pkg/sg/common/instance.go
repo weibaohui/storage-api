@@ -26,25 +26,25 @@ func NewInstance(config *api.Config) *Instance {
 	return instance
 }
 
-func (r *Instance) connect() {
-	cookies, err := r.loginCookie()
+func (i *Instance) connect() {
+	cookies, err := i.loginCookie()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	r.loginCookies = cookies
+	i.loginCookies = cookies
 
-	store, err := r.DefaultStore()
+	store, err := i.DefaultStore()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	r.StoreName = store.Name
-	r.UUID = store.UUID
+	i.StoreName = store.Name
+	i.UUID = store.UUID
 }
 
-func (r *Instance) FullURL(path string) (fullURL string) {
-	return fmt.Sprintf("%s://%s:%s%s", r.Protocol, r.Host, r.Port, path)
+func (i *Instance) FullURL(path string) (fullURL string) {
+	return fmt.Sprintf("%s://%s:%s%s", i.Protocol, i.Host, i.Port, path)
 }
 
-func (r *Instance) Command(command string) (fullURL string) {
-	return fmt.Sprintf("%s://%s:%s%s?user_name=%s&uuid=%s", r.Protocol, r.Host, r.Port, command, r.Username, r.UUID)
+func (i *Instance) Command(command string) (fullURL string) {
+	return fmt.Sprintf("%s://%s:%s%s?user_name=%s&uuid=%s", i.Protocol, i.Host, i.Port, command, i.Username, i.UUID)
 }

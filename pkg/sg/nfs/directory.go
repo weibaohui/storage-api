@@ -21,7 +21,7 @@ type DirectoryList struct {
 //rand:
 //params: {"path":"ParaStor300S:/ddd","posix_permission":"rwxr-xr-x","auth_provider_id":"0","owner_user_id":0,"owner_group_id":0,"owner_user_name":"root","owner_group_name":"root"}
 
-func (r *instance) CreateDirectory(path string) (ok bool, err error) {
+func (i *instance) CreateDirectory(path string) (ok bool, err error) {
 	config := fmt.Sprintf(`{
 	"path":"%s:%s",
 	"posix_permission":"rwxrwxrwx",
@@ -30,8 +30,8 @@ func (r *instance) CreateDirectory(path string) (ok bool, err error) {
 	"owner_group_id":0,
 	"owner_user_name":"root",
 	"owner_group_name":"root"
-	}`, r.common.StoreName, path)
-	return r.createDirectory(config)
+	}`, i.common.StoreName, path)
+	return i.createDirectory(config)
 }
 
 //指定目录权限
@@ -40,7 +40,7 @@ func (r *instance) CreateDirectory(path string) (ok bool, err error) {
 //用户    读取 写入 执行
 //用户组  读取 写入 执行
 //其他    读取 写入 执行
-func (r *instance) CreateDirectoryWithPermission(path, permission string) (bool, error) {
+func (i *instance) CreateDirectoryWithPermission(path, permission string) (bool, error) {
 	config := fmt.Sprintf(`{
 	"path":"%s:%s",
 	"posix_permission":"%s",
@@ -49,14 +49,14 @@ func (r *instance) CreateDirectoryWithPermission(path, permission string) (bool,
 	"owner_group_id":0,
 	"owner_user_name":"root",
 	"owner_group_name":"root"
-	}`, r.common.StoreName, path, permission)
-	return r.createDirectory(config)
+	}`, i.common.StoreName, path, permission)
+	return i.createDirectory(config)
 }
-func (r *instance) createDirectory(config string) (ok bool, err error) {
-	url := r.common.Command("/commands/create_file.action")
+func (i *instance) createDirectory(config string) (ok bool, err error) {
+	url := i.common.Command("/commands/create_file.action")
 	params := make(map[string]string)
 	params["params"] = config
-	str, err := r.common.PostWithLoginSession(url, params)
+	str, err := i.common.PostWithLoginSession(url, params)
 	if err != nil {
 		return false, err
 	}
@@ -77,14 +77,14 @@ func (r *instance) createDirectory(config string) (ok bool, err error) {
 //https://192.168.3.60:6080/commands/delete_file.action?user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
 //rand:
 //params: {"path":"ParaStor300S:/test"}
-func (r *instance) DeleteDirectory(path string) (ok bool, err error) {
-	url := r.common.Command("/commands/delete_file.action")
+func (i *instance) DeleteDirectory(path string) (ok bool, err error) {
+	url := i.common.Command("/commands/delete_file.action")
 	params := make(map[string]string)
 	params["params"] = fmt.Sprintf(`{
 	"path":"%s:%s",
-	}`, r.common.StoreName, path)
+	}`, i.common.StoreName, path)
 
-	str, err := r.common.PostWithLoginSession(url, params)
+	str, err := i.common.PostWithLoginSession(url, params)
 	if err != nil {
 		return false, err
 	}
@@ -103,12 +103,12 @@ func (r *instance) DeleteDirectory(path string) (ok bool, err error) {
 //非空目录不能删除，需要逐级删除
 //POST
 //https://192.168.3.60:6080/commands/get_file_list.action?cmd_id=0.7323753691986996&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
-func (r *instance) listDirectory(config string) ([]*api.DetailFiles, error) {
-	url := r.common.Command("/commands/get_file_list.action")
+func (i *instance) listDirectory(config string) ([]*api.DetailFiles, error) {
+	url := i.common.Command("/commands/get_file_list.action")
 	params := make(map[string]string)
 	params["params"] = config
 
-	str, err := r.common.PostWithLoginSession(url, params)
+	str, err := i.common.PostWithLoginSession(url, params)
 	if err != nil {
 		return nil, err
 	}
@@ -122,13 +122,13 @@ func (r *instance) listDirectory(config string) ([]*api.DetailFiles, error) {
 	}
 	for _, v := range result.Data.DetailFiles {
 		//去除存储服务器名称
-		v.PosixPath = strings.TrimPrefix(v.Path, r.common.StoreName+":")
+		v.PosixPath = strings.TrimPrefix(v.Path, i.common.StoreName+":")
 	}
 	return result.Data.DetailFiles, nil
 }
 
 //列表显示目录
-func (r *instance) ListDirectory(path string) ([]*api.DetailFiles, error) {
+func (i *instance) ListDirectory(path string) ([]*api.DetailFiles, error) {
 
 	config := fmt.Sprintf(`{
 	"limit":1000000,
@@ -138,13 +138,13 @@ func (r *instance) ListDirectory(path string) ([]*api.DetailFiles, error) {
 	"display_details":true,
 	"type":"DIR",
 	"searches":[{"searchKey":"name","searchValue":""}]
-	}`, r.common.StoreName, path)
+	}`, i.common.StoreName, path)
 
-	return r.listDirectory(config)
+	return i.listDirectory(config)
 }
 
 //列表显示目录及文件
-func (r *instance) ListDirectoryWithFiles(path string) ([]*api.DetailFiles, error) {
+func (i *instance) ListDirectoryWithFiles(path string) ([]*api.DetailFiles, error) {
 	config := fmt.Sprintf(`{
 	"limit":1000000,
 	"start":0,
@@ -152,7 +152,7 @@ func (r *instance) ListDirectoryWithFiles(path string) ([]*api.DetailFiles, erro
 	"path":"%s:%s",	
 	"display_details":true,
 	"searches":[{"searchKey":"name","searchValue":""}]
-	}`, r.common.StoreName, path)
-	return r.listDirectory(config)
+	}`, i.common.StoreName, path)
+	return i.listDirectory(config)
 
 }

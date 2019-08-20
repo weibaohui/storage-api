@@ -45,11 +45,11 @@ type jobIDResult struct {
 //POST
 //params: {"job_id_str":"1603768355463880"}
 //https://192.168.3.60:6080/commands/get_job_by_id.action?cmd_id=0.9346451830352056&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
-func (r *instance) getJobById(jobID string) (*jobResult, error) {
-	url := r.common.Command("/commands/get_job_by_id.action")
+func (i *instance) getJobById(jobID string) (*jobResult, error) {
+	url := i.common.Command("/commands/get_job_by_id.action")
 	params := make(map[string]string, 0)
 	params["params"] = fmt.Sprintf("{\"job_id_str\":\"%s\"}", jobID)
-	jsonStr, err := r.common.PostWithLoginSession(url, params)
+	jsonStr, err := i.common.PostWithLoginSession(url, params)
 	if err != nil {
 		return nil, err
 	}
@@ -64,8 +64,8 @@ func (r *instance) getJobById(jobID string) (*jobResult, error) {
 	return result.Data, nil
 }
 
-func (r *instance) isJobDone(jobID string) (bool, error) {
-	jobResult, err := r.getJobById(jobID)
+func (i *instance) isJobDone(jobID string) (bool, error) {
+	jobResult, err := i.getJobById(jobID)
 	if err != nil {
 		return false, err
 	}
@@ -81,7 +81,7 @@ func (r *instance) isJobDone(jobID string) (bool, error) {
 		}
 	case jobStateRunning:
 		time.Sleep(time.Millisecond * 500)
-		return r.isJobDone(jobID)
+		return i.isJobDone(jobID)
 	}
 	return false, errors.New("未知错误jobResult.State=" + jobResult.State)
 }

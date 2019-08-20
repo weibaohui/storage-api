@@ -7,8 +7,8 @@ import (
 )
 
 //操作使用的cookie
-func (r *Instance) AuthCookie() (cookies []*http.Cookie, err error) {
-	return r.loginCookie()
+func (i *Instance) AuthCookie() (cookies []*http.Cookie, err error) {
+	return i.loginCookie()
 }
 
 // 登录cookie
@@ -16,11 +16,11 @@ func (r *Instance) AuthCookie() (cookies []*http.Cookie, err error) {
 // strUserName: optadmin
 // strPassword: adminadmin
 // language: zh_CN
-func (r *Instance) loginCookie() ([]*http.Cookie, error) {
-	url := r.FullURL("/login/loginAuth.action")
+func (i *Instance) loginCookie() ([]*http.Cookie, error) {
+	url := i.FullURL("/login/loginAuth.action")
 	post := httpkit.Post(url)
-	post.Param("strUserName", r.Username)
-	post.Param("strPassword", r.Password)
+	post.Param("strUserName", i.Username)
+	post.Param("strPassword", i.Password)
 	post.Param("language", "zh_CN")
 
 	SetSkipSSLVerify(post)
