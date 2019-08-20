@@ -32,7 +32,6 @@ type ZkServers struct {
 
 //POST
 //登录cookie
-//https://192.168.3.60:6080/install/getStorageSystemsOverview.action?cmd_id=0.4124075744799065&user_name=optadmin
 func (i *Instance) ListStore() (*StoreList, error) {
 	url := i.FullURL("/install/getStorageSystemsOverview.action?user_name=" + i.Username)
 	str, err := i.PostWithLoginSession(url, nil)

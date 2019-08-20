@@ -66,9 +66,6 @@ type QuotasList struct {
 }
 
 // 查询配额列表
-//POST
-//登录cookie
-//https://192.168.3.60:6080/commands/get_quota.action?cmd_id=0.5387214431814484&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
 func (i *instance) ListQuota() (*QuotasList, error) {
 	url := i.common.Command("/commands/get_quota.action")
 	params := make(map[string]string)
@@ -90,9 +87,6 @@ func (i *instance) ListQuota() (*QuotasList, error) {
 }
 
 //设置配额,0为不限制
-//POST
-//登录cookie
-//https://192.168.3.60:6080/commands/create_quota.action?cmd_id=0.5181687999132814&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
 //readBw writeBw Mb/s
 func (i *instance) CreateQuota(path string, ips, ops, readBw, writeBw int) (ok bool, quotaID string, err error) {
 	url := i.common.Command("/commands/create_quota.action")
@@ -127,7 +121,7 @@ func (i *instance) CreateQuota(path string, ips, ops, readBw, writeBw int) (ok b
 	"write_bandwidth_quota":"%d",
 	"user_or_group_id":""
 	}]}`
-	fullPath := fmt.Sprintf("%s:%s", r.common.StoreName, path)
+	fullPath := fmt.Sprintf("%s:%s", i.common.StoreName, path)
 	config := fmt.Sprintf(s, fullPath, ips, ops, readBw, writeBw)
 	params["params"] = config
 	str, err := i.common.PostWithLoginSession(url, params)
@@ -166,10 +160,6 @@ func (i *instance) CreateQuota(path string, ips, ops, readBw, writeBw int) (ok b
 
 //删除配额
 //需要等待一定时间，才会执行完毕
-//POST
-//https://192.168.3.60:6080/commands/delete_quota.action?cmd_id=0.5855324522870262&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
-//rand:
-//params: {"ids":[6]}
 func (i *instance) DeleteQuota(id string) (ok bool, err error) {
 	url := i.common.Command("/commands/delete_quota.action")
 	params := make(map[string]string)

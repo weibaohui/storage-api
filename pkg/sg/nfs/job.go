@@ -42,9 +42,6 @@ type jobIDResult struct {
 }
 
 //获取JOB
-//POST
-//params: {"job_id_str":"1603768355463880"}
-//https://192.168.3.60:6080/commands/get_job_by_id.action?cmd_id=0.9346451830352056&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
 func (i *instance) getJobById(jobID string) (*jobResult, error) {
 	url := i.common.Command("/commands/get_job_by_id.action")
 	params := make(map[string]string, 0)
