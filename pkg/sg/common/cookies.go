@@ -28,10 +28,10 @@ func (i *Instance) loginCookie() ([]*http.Cookie, error) {
 	if err != nil {
 		return nil, err
 	}
-	i := response.Cookies()
+	cookies := response.Cookies()
 	if i == nil {
 		return nil, errors.New("服务器没有返回登录cookies")
 	}
-	return i, nil
+	return cookies, nil
 
 }
