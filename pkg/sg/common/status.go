@@ -2,7 +2,7 @@ package common
 
 import (
 	"encoding/json"
-	"nfs-api/pkg/sg"
+	"storage-api/pkg/sg"
 )
 
 type ClusterStatus struct {

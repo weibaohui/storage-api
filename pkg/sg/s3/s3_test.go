@@ -2,7 +2,7 @@ package s3
 
 import (
 	"fmt"
-	"nfs-api/pkg/api"
+	"storage-api/pkg/api"
 	"testing"
 )
 

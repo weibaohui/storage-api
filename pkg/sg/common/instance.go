@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"nfs-api/pkg/api"
+	"storage-api/pkg/api"
 )
 
 type Instance struct {

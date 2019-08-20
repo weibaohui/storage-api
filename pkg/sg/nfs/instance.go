@@ -1,8 +1,8 @@
 package nfs
 
 import (
-	"nfs-api/pkg/api"
-	"nfs-api/pkg/sg/common"
+	"storage-api/pkg/api"
+	"storage-api/pkg/sg/common"
 )
 
 type instance struct {

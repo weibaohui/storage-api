@@ -3,8 +3,8 @@ package s3
 import (
 	"encoding/json"
 	"fmt"
-	"nfs-api/pkg/api"
-	"nfs-api/pkg/sg"
+	"storage-api/pkg/api"
+	"storage-api/pkg/sg"
 )
 
 type CertificateList struct {

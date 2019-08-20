@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"nfs-api/pkg/sg"
+	"storage-api/pkg/sg"
 	"time"
 )
 
