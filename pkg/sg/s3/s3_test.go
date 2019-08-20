@@ -60,13 +60,35 @@ func TestListCertificate(t *testing.T) {
 }
 func TestDeleteAccount(t *testing.T) {
 
-	ok, err := s3api.DeleteAccount("2PO1B8F4QBKHSRZW31W1ZLS4U5AIGCGX")
-	if err != nil {
-		fmt.Println(err.Error())
-		return
-	}
-	fmt.Println("删除S3账户结果", ok)
+	accountName := "zhangsanfeng"
+	if accountID, err := s3api.CreateAccount(accountName, 0); err == nil {
+		fmt.Println("创建账户结果", accountID)
+		accounts, err := s3api.ListAccount()
+		if err != nil {
+			t.Fatal(err.Error())
+		}
+		for k, v := range accounts {
+			fmt.Println("列表账户：", k, v.AccountID, v.AccountEmail, v.AccountName)
+		}
+		if ak, sk, err := s3api.CreateCertificate(accountID); err == nil {
+			fmt.Println("创建证书成功", ak, sk)
+			infos, err := s3api.ListCertificate(accountID)
+			if err != nil {
+				t.Fatal(err.Error())
+			}
+			for k, v := range infos {
+				fmt.Println("列表证书：", k, v.CertificateID, v.SecretKey, v.State)
+			}
 
+			if ok, err := s3api.DeleteAccount(accountID); err == nil {
+				fmt.Println("删除账户", ok)
+			}
+
+		}
+
+	} else {
+		t.Fatal("创建账户失败", err.Error())
+	}
 }
 
 func TestRunS3(t *testing.T) {
@@ -74,8 +96,22 @@ func TestRunS3(t *testing.T) {
 	accountName := "zhangsanfeng"
 	if accountID, err := s3api.CreateAccount(accountName, 0); err == nil {
 		fmt.Println("创建账户结果", accountID)
+		accounts, err := s3api.ListAccount()
+		if err != nil {
+			t.Fatal(err.Error())
+		}
+		for k, v := range accounts {
+			fmt.Println("列表账户：", k, v.AccountID, v.AccountEmail, v.AccountName)
+		}
 		if ak, sk, err := s3api.CreateCertificate(accountID); err == nil {
 			fmt.Println("创建证书成功", ak, sk)
+			infos, err := s3api.ListCertificate(accountID)
+			if err != nil {
+				t.Fatal(err.Error())
+			}
+			for k, v := range infos {
+				fmt.Println("列表证书：", k, v.CertificateID, v.SecretKey, v.State)
+			}
 			if ok, err := s3api.DeleteCertificate(ak); err == nil {
 				fmt.Println("删除证书", ok)
 				if ok, err := s3api.DeleteAccount(accountID); err == nil {

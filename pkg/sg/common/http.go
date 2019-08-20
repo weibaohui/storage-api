@@ -25,8 +25,15 @@ func (r *Instance) PostWithLoginSession(fullURL string, params map[string]string
 		return "", err
 	}
 	if strings.Contains(str, "<script>window.top.location='/'</script>") {
+		if r.retryLogin <= 3 {
+			//自动进行重新登录
+			r.retryLogin += 1
+			r.connect()
+			return r.PostWithLoginSession(fullURL, params)
+		}
 		return "", errors.New("cookie失效，请检查登录参数")
 	}
+
 	return str, err
 }
 

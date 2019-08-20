@@ -12,6 +12,7 @@ type Instance struct {
 	UUID         string         //磁阵系统UUID
 	StoreName    string         //存储系统名称
 	loginCookies []*http.Cookie //登录cookie
+	retryLogin   int            //当登录失败时尝试重新登录次数
 }
 
 func NewInstance(config *api.Config) *Instance {
