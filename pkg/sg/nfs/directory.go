@@ -1,30 +1,19 @@
-package sg
+package nfs
 
 import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"nfs-api/pkg/api"
+	"nfs-api/pkg/sg"
 	"strings"
 )
 
-type DetailFiles struct {
-	AccessTime      int64  `json:"access_time"`
-	CreateTime      int64  `json:"create_time"`
-	ModifyTime      int64  `json:"modify_time"`
-	Name            string `json:"name"`
-	OwnerGroupName  string `json:"owner_group_name"`
-	OwnerUserName   string `json:"owner_user_name"`
-	Path            string `json:"path"`       // ParaStor300S:/test/123
-	PosixPath       string `json:"posix_path"` // /test/123
-	PosixPermission string `json:"posix_permission"`
-	Size            int    `json:"size"`
-	Type            string `json:"type"` //DIR FILE
-}
 type DirectoryList struct {
-	ErrorMsg
+	sg.ErrorMsg
 	Data struct {
-		DetailFiles []*DetailFiles `json:"detail_files"`
-		Total       int            `json:"total"`
+		DetailFiles []*api.DetailFiles `json:"detail_files"`
+		Total       int                `json:"total"`
 	} `json:"result"`
 }
 
@@ -33,7 +22,7 @@ type DirectoryList struct {
 //rand:
 //params: {"path":"ParaStor300S:/ddd","posix_permission":"rwxr-xr-x","auth_provider_id":"0","owner_user_id":0,"owner_group_id":0,"owner_user_name":"root","owner_group_name":"root"}
 
-func (r *common.Robot) CreateDirectory(path string) (ok bool, err error) {
+func (r *instance) CreateDirectory(path string) (ok bool, err error) {
 	config := fmt.Sprintf(`{
 	"path":"%s:%s",
 	"posix_permission":"rwxrwxrwx",
@@ -42,7 +31,7 @@ func (r *common.Robot) CreateDirectory(path string) (ok bool, err error) {
 	"owner_group_id":0,
 	"owner_user_name":"root",
 	"owner_group_name":"root"
-	}`, r.storeName, path)
+	}`, r.common.StoreName, path)
 	return r.createDirectory(config)
 }
 
@@ -52,7 +41,7 @@ func (r *common.Robot) CreateDirectory(path string) (ok bool, err error) {
 //用户    读取 写入 执行
 //用户组  读取 写入 执行
 //其他    读取 写入 执行
-func (r *common.Robot) CreateDirectoryWithPermission(path, permission string) (bool, error) {
+func (r *instance) CreateDirectoryWithPermission(path, permission string) (bool, error) {
 	config := fmt.Sprintf(`{
 	"path":"%s:%s",
 	"posix_permission":"%s",
@@ -61,18 +50,18 @@ func (r *common.Robot) CreateDirectoryWithPermission(path, permission string) (b
 	"owner_group_id":0,
 	"owner_user_name":"root",
 	"owner_group_name":"root"
-	}`, r.storeName, path, permission)
+	}`, r.common.StoreName, path, permission)
 	return r.createDirectory(config)
 }
-func (r *common.Robot) createDirectory(config string) (ok bool, err error) {
-	url := r.fullURL("/commands/create_file.action?user_name=" + r.Username + "&uuid=" + r.uuid)
+func (r *instance) createDirectory(config string) (ok bool, err error) {
+	url := r.common.Command("/commands/create_file.action")
 	params := make(map[string]string)
 	params["params"] = config
-	str, err := r.PostWithLoginSession(url, params)
+	str, err := r.common.PostWithLoginSession(url, params)
 	if err != nil {
 		return false, err
 	}
-	result := &ErrorMsg{}
+	result := &sg.ErrorMsg{}
 	err = json.Unmarshal([]byte(str), result)
 	if err != nil {
 		return false, err
@@ -89,18 +78,18 @@ func (r *common.Robot) createDirectory(config string) (ok bool, err error) {
 //https://192.168.3.60:6080/commands/delete_file.action?user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
 //rand:
 //params: {"path":"ParaStor300S:/test"}
-func (r *common.Robot) DeleteDirectory(path string) (ok bool, err error) {
-	url := r.fullURL("/commands/delete_file.action?user_name=" + r.Username + "&uuid=" + r.uuid)
+func (r *instance) DeleteDirectory(path string) (ok bool, err error) {
+	url := r.common.Command("/commands/delete_file.action")
 	params := make(map[string]string)
 	params["params"] = fmt.Sprintf(`{
 	"path":"%s:%s",
-	}`, r.storeName, path)
+	}`, r.common.StoreName, path)
 
-	str, err := r.PostWithLoginSession(url, params)
+	str, err := r.common.PostWithLoginSession(url, params)
 	if err != nil {
 		return false, err
 	}
-	result := &ErrorMsg{}
+	result := &sg.ErrorMsg{}
 	err = json.Unmarshal([]byte(str), result)
 	if err != nil {
 		return false, err
@@ -115,12 +104,12 @@ func (r *common.Robot) DeleteDirectory(path string) (ok bool, err error) {
 //非空目录不能删除，需要逐级删除
 //POST
 //https://192.168.3.60:6080/commands/get_file_list.action?cmd_id=0.7323753691986996&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
-func (r *common.Robot) listDirectory(config string) ([]*DetailFiles, error) {
-	url := r.fullURL("/commands/get_file_list.action?user_name=" + r.Username + "&uuid=" + r.uuid)
+func (r *instance) listDirectory(config string) ([]*api.DetailFiles, error) {
+	url := r.common.Command("/commands/get_file_list.action")
 	params := make(map[string]string)
 	params["params"] = config
 
-	str, err := r.PostWithLoginSession(url, params)
+	str, err := r.common.PostWithLoginSession(url, params)
 	if err != nil {
 		return nil, err
 	}
@@ -134,13 +123,13 @@ func (r *common.Robot) listDirectory(config string) ([]*DetailFiles, error) {
 	}
 	for _, v := range result.Data.DetailFiles {
 		//去除存储服务器名称
-		v.PosixPath = strings.TrimPrefix(v.Path, r.storeName+":")
+		v.PosixPath = strings.TrimPrefix(v.Path, r.common.StoreName+":")
 	}
 	return result.Data.DetailFiles, nil
 }
 
 //列表显示目录
-func (r *common.Robot) ListDirectory(path string) ([]*DetailFiles, error) {
+func (r *instance) ListDirectory(path string) ([]*api.DetailFiles, error) {
 
 	config := fmt.Sprintf(`{
 	"limit":1000000,
@@ -150,13 +139,13 @@ func (r *common.Robot) ListDirectory(path string) ([]*DetailFiles, error) {
 	"display_details":true,
 	"type":"DIR",
 	"searches":[{"searchKey":"name","searchValue":""}]
-	}`, r.storeName, path)
+	}`, r.common.StoreName, path)
 
 	return r.listDirectory(config)
 }
 
 //列表显示目录及文件
-func (r *common.Robot) ListDirectoryWithFiles(path string) ([]*DetailFiles, error) {
+func (r *instance) ListDirectoryWithFiles(path string) ([]*api.DetailFiles, error) {
 	config := fmt.Sprintf(`{
 	"limit":1000000,
 	"start":0,
@@ -164,7 +153,7 @@ func (r *common.Robot) ListDirectoryWithFiles(path string) ([]*DetailFiles, erro
 	"path":"%s:%s",	
 	"display_details":true,
 	"searches":[{"searchKey":"name","searchValue":""}]
-	}`, r.storeName, path)
+	}`, r.common.StoreName, path)
 	return r.listDirectory(config)
 
 }

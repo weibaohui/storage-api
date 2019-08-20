@@ -8,7 +8,7 @@ import (
 	"strings"
 )
 
-func (r *Robot) PostWithLoginSession(fullURL string, params map[string]string) (str string, err error) {
+func (r *Instance) PostWithLoginSession(fullURL string, params map[string]string) (str string, err error) {
 	req := httpkit.Post(fullURL)
 	SetSkipSSLVerify(req)
 

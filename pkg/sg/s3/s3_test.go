@@ -6,11 +6,10 @@ import (
 	"testing"
 )
 
-var config *api.Config
 var s3api api.S3Api
 
 func init() {
-	config = &api.Config{
+	config := &api.Config{
 		Protocol: "https",
 		Host:     "192.168.3.60",
 		Port:     "6080",

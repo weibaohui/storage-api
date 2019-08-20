@@ -1,27 +1,48 @@
-package pkg
+package nfs
 
 import (
 	"fmt"
 	"nfs-api/pkg/api"
-	"nfs-api/pkg/sg/common"
 	"testing"
 	"time"
 )
 
-var config *api.Config
 var nfsApi api.NFSApi
 
 func init() {
-	config = &api.Config{
+	config := &api.Config{
 		Protocol: "https",
 		Host:     "192.168.3.60",
 		Port:     "6080",
 		Username: "optadmin",
 		Password: "adminadmin",
 	}
-	apiBig := common.NewInstance(config)
-	nfsApi = apiBig.(api.NFSApi)
+	nfsApi = NewInstance(config)
 }
+
+func TestListDirectory(t *testing.T) {
+	path := "/test/"
+	list, err := nfsApi.ListDirectory(path)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	for _, v := range list {
+		fmt.Printf("%s\t%s\t%s \t%s \n", v.PosixPath, v.Path, v.PosixPermission, v.Type)
+	}
+}
+func TestListDirectoryWithFiles(t *testing.T) {
+	path := "/nfs/"
+	list, err := nfsApi.ListDirectoryWithFiles(path)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	for _, v := range list {
+		fmt.Printf("%s\t%s\t%s \t%s \n", v.PosixPath, v.Path, v.PosixPermission, v.Type)
+	}
+}
+
 func TestDeleteDirectory(t *testing.T) {
 	path := "/test/4455"
 	if ok, err := nfsApi.DeleteDirectory(path); err == nil {

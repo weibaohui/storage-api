@@ -7,7 +7,3 @@ type Config struct {
 	Username string //管理用户名
 	Password string //管理密码
 }
-type Api interface {
-	NFSApi
-	S3Api
-}

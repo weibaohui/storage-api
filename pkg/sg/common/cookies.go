@@ -4,11 +4,10 @@ import (
 	"errors"
 	"github.com/weibaohui/go-kit/httpkit"
 	"net/http"
-	"nfs-api/pkg/sg"
 )
 
 //操作使用的cookie
-func (r *Robot) AuthCookie() (cookies []*http.Cookie, err error) {
+func (r *Instance) AuthCookie() (cookies []*http.Cookie, err error) {
 	return r.loginCookie()
 }
 
@@ -17,8 +16,8 @@ func (r *Robot) AuthCookie() (cookies []*http.Cookie, err error) {
 // strUserName: optadmin
 // strPassword: adminadmin
 // language: zh_CN
-func (r *Robot) loginCookie() ([]*http.Cookie, error) {
-	url := r.fullURL(sg.LoginUrl)
+func (r *Instance) loginCookie() ([]*http.Cookie, error) {
+	url := r.FullURL("/login/loginAuth.action")
 	post := httpkit.Post(url)
 	post.Param("strUserName", r.Username)
 	post.Param("strPassword", r.Password)

@@ -1,4 +1,4 @@
-package s3
+package nfs
 
 import (
 	"nfs-api/pkg/api"
@@ -9,7 +9,7 @@ type instance struct {
 	common *common.Instance
 }
 
-func NewInstance(config *api.Config) api.S3Api {
+func NewInstance(config *api.Config) api.NFSApi {
 	instance := &instance{
 		common: common.NewInstance(config),
 	}

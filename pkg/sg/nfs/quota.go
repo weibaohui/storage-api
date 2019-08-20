@@ -1,10 +1,11 @@
 // 配额管理
-package sg
+package nfs
 
 import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"nfs-api/pkg/sg"
 )
 
 type Quota struct {
@@ -60,7 +61,7 @@ type QuotaPage struct {
 	Total    int           `json:"total"`
 }
 type QuotasList struct {
-	ErrorMsg
+	sg.ErrorMsg
 	Data *QuotaPage `json:"result"`
 }
 
@@ -68,13 +69,12 @@ type QuotasList struct {
 //POST
 //登录cookie
 //https://192.168.3.60:6080/commands/get_quota.action?cmd_id=0.5387214431814484&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
-func (r *common.Robot) ListQuota() (*QuotasList, error) {
-	url := r.fullURL("/commands/get_quota.action?user_name=" + r.Username + "&uuid=" + r.uuid)
-
+func (r *instance) ListQuota() (*QuotasList, error) {
+	url := r.common.Command("/commands/get_quota.action")
 	params := make(map[string]string)
 	//params: {"limit":20,"start":0,"sort":"","searches":[{"searchKey":"path","searchValue":"nfs"}]}
 	params["params"] = "{\"limit\":10000,\"start\":0,\"sort\":\"\",\"data\":[]}"
-	j, err := r.PostWithLoginSession(url, params)
+	j, err := r.common.PostWithLoginSession(url, params)
 	if err != nil {
 		return nil, err
 	}
@@ -94,8 +94,8 @@ func (r *common.Robot) ListQuota() (*QuotasList, error) {
 //登录cookie
 //https://192.168.3.60:6080/commands/create_quota.action?cmd_id=0.5181687999132814&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
 //readBw writeBw Mb/s
-func (r *common.Robot) CreateQuota(path string, ips, ops, readBw, writeBw int) (ok bool, quotaID string, err error) {
-	url := r.fullURL("/commands/create_quota.action?user_name=" + r.Username + "&uuid=" + r.uuid)
+func (r *instance) CreateQuota(path string, ips, ops, readBw, writeBw int) (ok bool, quotaID string, err error) {
+	url := r.common.Command("/commands/create_quota.action")
 	params := make(map[string]string)
 
 	s := `{"quotas":[{
@@ -127,10 +127,10 @@ func (r *common.Robot) CreateQuota(path string, ips, ops, readBw, writeBw int) (
 	"write_bandwidth_quota":"%d",
 	"user_or_group_id":""
 	}]}`
-	fullPath := fmt.Sprintf("%s:%s", r.storeName, path)
+	fullPath := fmt.Sprintf("%s:%s", r.common.StoreName, path)
 	config := fmt.Sprintf(s, fullPath, ips, ops, readBw, writeBw)
 	params["params"] = config
-	str, err := r.PostWithLoginSession(url, params)
+	str, err := r.common.PostWithLoginSession(url, params)
 	if err != nil {
 		return false, "", err
 	}
@@ -170,11 +170,11 @@ func (r *common.Robot) CreateQuota(path string, ips, ops, readBw, writeBw int) (
 //https://192.168.3.60:6080/commands/delete_quota.action?cmd_id=0.5855324522870262&user_name=optadmin&uuid=9fdc9c55-cb34-4e40-9da9-ada6d5334a6c
 //rand:
 //params: {"ids":[6]}
-func (r *common.Robot) DeleteQuota(id string) (ok bool, err error) {
-	url := r.fullURL("/commands/delete_quota.action?user_name=" + r.Username + "&uuid=" + r.uuid)
+func (r *instance) DeleteQuota(id string) (ok bool, err error) {
+	url := r.common.Command("/commands/delete_quota.action")
 	params := make(map[string]string)
 	params["params"] = fmt.Sprintf("{\"ids\":[%s]}", id)
-	str, err := r.PostWithLoginSession(url, params)
+	str, err := r.common.PostWithLoginSession(url, params)
 	if err != nil {
 		return false, err
 	}

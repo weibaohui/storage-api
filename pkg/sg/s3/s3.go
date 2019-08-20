@@ -52,7 +52,7 @@ type s3CertificateResult struct {
 //{"detail_err_msg":"","err_msg":"","err_no":0,"result":{"account_id":"2PO1B8F4QBKHSRZW2SA3A9G2BFJ2EKB6","account_name":"mingcheng","create_date":"2019-08-19 16:53:08"},"sync":true,"time_stamp":1566204788677,"time_zone_offset":-480,"trace_id":"[348220645984 2]"}
 //quota 单位GB
 func (r *instance) CreateAccount(name string, quota int) (accountID string, err error) {
-	url := r.fullURL("/commands/add_account.action?user_name=" + r.Username + "&uuid=" + r.common.UUID)
+	url := r.common.Command("/commands/add_account.action")
 	params := make(map[string]string)
 	params["params"] = fmt.Sprintf(`{
 	"account_name":"%s",
@@ -82,7 +82,7 @@ func (r *instance) CreateAccount(name string, quota int) (accountID string, err 
 //params: {"account_id":"2PO1B8F4QBKHSRZW2SA3A9G2BFJ2EKB6"}
 //{"detail_err_msg":"","err_msg":"","err_no":0,"result":{"account_id":"2PO1B8F4QBKHSRZW2SA3A9G2BFJ2EKB6","account_name":"mingcheng","create_date":"2019-08-19 16:53:08"},"sync":true,"time_stamp":1566204788677,"time_zone_offset":-480,"trace_id":"[348220645984 2]"}
 func (r *instance) CreateCertificate(accountID string) (ak, sk string, err error) {
-	url := r.fullURL("/commands/add_certificate.action?user_name=" + r.Username + "&uuid=" + r.common.UUID)
+	url := r.common.Command("/commands/add_certificate.action")
 	params := make(map[string]string)
 	params["params"] = fmt.Sprintf(`{"account_id":"%s"}`, accountID)
 	str, err := r.common.PostWithLoginSession(url, params)
@@ -106,7 +106,7 @@ func (r *instance) CreateCertificate(accountID string) (ak, sk string, err error
 //{"detail_err_msg":"","err_msg":"","err_no":0,"result":{"accounts":[{"account_email":"4545@11.com","account_id":"2PO1B8F4QBKHSRZW2C21IZG6LI3FUMQ9","account_name":"555","account_quota":0,"bucket_number":0,"create_date":"2019-08-19 14:42:32","used_bytes":0},{"account_email":"email@email.com","account_id":"2PO1B8F4QBKHSRZW2SA3A9G2BFJ2EKB6","account_name":"mingcheng","account_quota":0,"bucket_number":0,"create_date":"2019-08-19 16:53:08","used_bytes":0},{"account_email":"sugontest@sugon.com","account_id":"2PO1B8F4QBKHSRZW2C21IZG6LI3FUMQB","account_name":"sugontest","account_quota":0,"bucket_number":0,"create_date":"2019-08-15 16:44:01","used_bytes":0}],"has_more_data":false,"total":3},"sync":true,"time_stamp":1566204788709,"time_zone_offset":-480,"trace_id":"[348220691257 2]"}
 //todo 分页最大1000
 func (r *instance) ListAccount() ([]*api.Account, error) {
-	url := r.fullURL("/commands/list_accounts_sort.action?user_name=" + r.Username + "&uuid=" + r.common.UUID)
+	url := r.common.Command("/commands/list_accounts_sort.action")
 	params := make(map[string]string)
 	params["params"] = `{
 	"limit":0,"start":0,
@@ -136,7 +136,7 @@ func (r *instance) ListAccount() ([]*api.Account, error) {
 //params: {"limit":20,"start":0,"sort":"","account_id":"2PO1B8F4QBKHSRZW31W1ZLS4U5AIGCHQ"}
 //{"detail_err_msg":"","err_msg":"","err_no":0,"result":{"account_id":"2PO1B8F4QBKHSRZW31W1ZLS4U5AIGCHQ","certificate_info":[{"certificate_id":"2PO1B8F4QBKHSRZW31W1ZLS4U5AIGCHQ2EL1TO9IPQEEFKML2SA3A9G2BFJ2EKBA","create_date":"2019-08-19 17:39:51","secret_key":"b4824f981d81a67be8d9f34e89acc60c1f27a7b9","state":"S3_CERTIFICATE_ENABLE"}],"certificate_nr":1},"sync":true,"time_stamp":1566207598651,"time_zone_offset":-480,"trace_id":"[351030643522 2]"}
 func (r *instance) ListCertificate(accountID string) ([]*api.CertificateInfo, error) {
-	url := r.fullURL("/commands/list_certificate.action?user_name=" + r.Username + "&uuid=" + r.common.UUID)
+	url := r.common.Command("/commands/list_certificate.action")
 	params := make(map[string]string)
 	params["params"] = fmt.Sprintf(`{
 	"limit":1000,"start":0,"sort":"",
@@ -164,7 +164,7 @@ func (r *instance) ListCertificate(accountID string) ([]*api.CertificateInfo, er
 //params: {"certificate_id":"2PO1B8F4QBKHSRZW31W1ZLS4U5AIGCHQ2EL1TO9IPQEEFKML2SA3A9G2BFJ2EKBA"}
 //{"detail_err_msg":"","err_msg":"","err_no":0,"sync":true,"time_stamp":1566208239975,"time_zone_offset":-480,"trace_id":"[351671949124 2]"}
 func (r *instance) DeleteCertificate(certificateID string) (ok bool, err error) {
-	url := r.fullURL("/commands/delete_certificate.action?user_name=" + r.Username + "&uuid=" + r.common.UUID)
+	url := r.common.Command("/commands/delete_certificate.action")
 	params := make(map[string]string)
 	params["params"] = fmt.Sprintf(`{
 	"certificate_id":"%s"
@@ -204,7 +204,7 @@ func (r *instance) DeleteAccount(accountID string) (ok bool, err error) {
 	}
 
 	//2 删除账户
-	url := r.fullURL("/commands/delete_account.action?user_name=" + r.Username + "&uuid=" + r.common.UUID)
+	url := r.common.Command("/commands/delete_account.action")
 	params := make(map[string]string)
 	params["params"] = fmt.Sprintf(`{
 	"account_id":"%s"
