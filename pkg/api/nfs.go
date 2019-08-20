@@ -1,5 +1,17 @@
 package api
 
+type Snapshot struct {
+	ID          int    `json:"id"`
+	Name        string `json:"name"`
+	Description string `json:"description"`
+	Path        string `json:"path"`
+	Key         int    `json:"key"`
+	State       string `json:"state"` //SNAPSHOT_WORKING
+	CreateTime  int    `json:"create_time"`
+	CreateUser  string `json:"create_user"`
+	ExpireTime  int    `json:"expire_time"`
+	Size        int    `json:"size"`
+}
 type DetailFiles struct {
 	AccessTime      int64  `json:"access_time"`
 	CreateTime      int64  `json:"create_time"`
@@ -27,4 +39,13 @@ type NFSApi interface {
 	ListDirectoryWithFiles(path string) ([]*DetailFiles, error)
 	//列表显示文件夹
 	ListDirectory(path string) ([]*DetailFiles, error)
+
+	//列表快照
+	ListSnapshot() ([]*Snapshot, error)
+	//创建快照
+	CreateSnapshot(name, path, desc string, expireTime int) (id string, err error)
+	//快照回滚
+	RevertSnapshot(id string) (ok bool, err error)
+	//删除快照
+	DeleteSnapshot(id string) (ok bool, err error)
 }

@@ -9,7 +9,7 @@ import (
 )
 
 func (r *Instance) PostWithLoginSession(fullURL string, params map[string]string) (str string, err error) {
-	req := httpkit.Post(fullURL)
+	req := httpkit.Post(fullURL).EnableDebug()
 	SetSkipSSLVerify(req)
 
 	for _, v := range r.loginCookies {

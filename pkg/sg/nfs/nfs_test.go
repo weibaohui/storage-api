@@ -60,6 +60,40 @@ func TestDeleteQuota(t *testing.T) {
 		t.Fatal("删除配额失败", err.Error())
 	}
 }
+
+func TestInstance_ListSnapshot(t *testing.T) {
+	if list, err := nfsApi.ListSnapshot(); err == nil {
+		for k, v := range list {
+			fmt.Println(k, v.ID, v.Name, v.State, v.Path, v.Key, v.Size, v.ExpireTime)
+		}
+	} else {
+		t.Fatal("ListSnapshot失败", err.Error())
+	}
+}
+func TestCreateDeleteSnapshot(t *testing.T) {
+	id, err := nfsApi.CreateSnapshot("test", "/test", "test目录备份", 0)
+	if err != nil {
+		t.Fatal(err.Error())
+		return
+	}
+	t.Log("创建快照ID=", id)
+	snapshots, err := nfsApi.ListSnapshot()
+	if err != nil {
+		t.Fatal(err.Error())
+		return
+	}
+	for k, v := range snapshots {
+		fmt.Println(k, v.ID, v.Name, v.State, v.Path, v.Key, v.Size, v.ExpireTime)
+	}
+
+	ok, err := nfsApi.DeleteSnapshot(id)
+	if err != nil {
+		t.Fatal(err.Error())
+		return
+	}
+	t.Log("删除快照ID=", id, ok)
+
+}
 func TestRun(t *testing.T) {
 	path := "/test/4455"
 
