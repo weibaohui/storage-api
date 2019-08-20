@@ -22,7 +22,6 @@ func (r *Instance) loginCookie() ([]*http.Cookie, error) {
 	post.Param("strUserName", r.Username)
 	post.Param("strPassword", r.Password)
 	post.Param("language", "zh_CN")
-	post.EnableCookie()
 
 	SetSkipSSLVerify(post)
 	response, err := post.Response()
