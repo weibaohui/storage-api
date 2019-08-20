@@ -51,3 +51,19 @@ func TestDefaultStore(t *testing.T) {
 	fmt.Println("ClusterRunningState=", store.ClusterRunningState)
 	fmt.Println("ClusterHealthyState=", store.ClusterHealthyState)
 }
+
+func TestInstance_ClusterStatus(t *testing.T) {
+	status, err := common.ClusterStatus()
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+
+	fmt.Println(status.Name)
+	fmt.Println(status.UUID)
+	fmt.Println(status.ActiveAlarmsNum)
+	fmt.Println(status.ClusterDataState)
+	fmt.Println(status.ClusterHealthyState)
+	fmt.Println(status.ClusterRunningState)
+	fmt.Println(status.NodesNumber)
+
+}
