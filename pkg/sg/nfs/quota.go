@@ -66,11 +66,10 @@ type QuotasList struct {
 }
 
 // 查询配额列表
-func (i *instance) ListQuota() (*QuotasList, error) {
+func (i *instance) listQuota(config string) (*QuotasList, error) {
 	url := i.common.Command("/commands/get_quota.action")
 	params := make(map[string]string)
-	//params: {"limit":20,"start":0,"sort":"","searches":[{"searchKey":"path","searchValue":"nfs"}]}
-	params["params"] = "{\"limit\":10000,\"start\":0,\"sort\":\"\",\"data\":[]}"
+	params["params"] = config
 	j, err := i.common.PostWithLoginSession(url, params)
 	if err != nil {
 		return nil, err
@@ -84,6 +83,21 @@ func (i *instance) ListQuota() (*QuotasList, error) {
 		return nil, result.Error()
 	}
 	return result, nil
+}
+
+// 查询配额列表
+func (i *instance) ListQuota() (*QuotasList, error) {
+	config := "{\"limit\":10000,\"start\":0,\"sort\":\"\",\"data\":[]}"
+	return i.listQuota(config)
+}
+
+// 查询配额列表
+func (i *instance) ListQuotaWithPath(path string) (*QuotasList, error) {
+	config := fmt.Sprintf(`
+	 {"limit":20,"start":0,"sort":"",
+	"searches":[{"searchKey":"path","searchValue":"%s"}]}
+	`, path)
+	return i.listQuota(config)
 }
 
 //设置配额,0为不限制
@@ -143,7 +157,7 @@ func (i *instance) CreateQuota(path string, ips, ops, readBw, writeBw int) (ok b
 		return false, "", err
 	}
 	//找到刚创建的quota
-	list, err := i.ListQuota()
+	list, err := i.ListQuotaWithPath(fullPath)
 	if err != nil {
 		return false, "", err
 	}
