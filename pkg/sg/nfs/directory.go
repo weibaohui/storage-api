@@ -119,7 +119,7 @@ func (i *instance) listDirectory(config string) ([]*api.DetailFiles, error) {
 
 //列表显示目录
 func (i *instance) ListDirectory(path string) ([]*api.DetailFiles, error) {
-
+	//type 展示的文件类型（DEFAULT/FILE/DIR），默认全部展示
 	config := fmt.Sprintf(`{
 	"limit":1000000,
 	"start":0,

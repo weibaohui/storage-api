@@ -17,18 +17,20 @@ type CertificateListResult struct {
 	Data *CertificateList `json:"result"`
 }
 type Certificate struct {
-	AccountID     string `json:"account_id"`
-	CertificateID string `json:"certificate_id"`
+	AccountID     string `json:"account_id"`     //账户ID
+	CertificateID string `json:"certificate_id"` //AK接入证书
+	SecretKey     string `json:"secret_key"`     //SK安全证书
+	State         string `json:"state"`          //激活状态 S3_CERTIFICATE_ENABLE S3_CERTIFICATE_DISABLE
 	CreateDate    string `json:"create_date"`
-	SecretKey     string `json:"secret_key"`
-	State         string `json:"state"`
 }
 type CertificateResult struct {
 	sg.ErrorMsg
 	Certificate *Certificate `json:"result"`
 }
 
-//创建S3账户
+//创建S3账户的证书
+//AK接入证书
+//SK安全证书
 func (i *instance) CreateCertificate(accountID string) (ak, sk string, err error) {
 	url := i.common.Command("/commands/add_certificate.action")
 	params := make(map[string]string)

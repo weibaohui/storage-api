@@ -23,7 +23,8 @@ type AccountResult struct {
 }
 
 //创建S3账户
-//quota 单位GB
+//quota 账户配额 单位GB 0表示不限
+//accountID 创建账户返回的账户ID
 func (i *instance) CreateAccount(name string, quota int) (accountID string, err error) {
 	url := i.common.Command("/commands/add_account.action")
 	params := make(map[string]string)

@@ -9,47 +9,47 @@ import (
 )
 
 type Quota struct {
-	ID                            int    `json:"id"`
+	ID                            int    `json:"id"` //配额id
 	Fsid                          int    `json:"fsid"`
 	Key                           int    `json:"key"`
-	Path                          string `json:"path"`
-	AuthProviderID                int    `json:"auth_provider_id"`
+	Path                          string `json:"path"`             //配额路径最大长度为4096
+	AuthProviderID                int    `json:"auth_provider_id"` //认证服务器,默认0
 	Description                   string `json:"description"`
-	FilenrGraceTime               int    `json:"filenr_grace_time"`
-	FilenrHardThreshold           int    `json:"filenr_hard_threshold"`
-	FilenrQuotaCalType            string `json:"filenr_quota_cal_type"`
-	FilenrSoftThreshold           int    `json:"filenr_soft_threshold"`
+	FilenrGraceTime               int    `json:"filenr_grace_time"`     //文件配额的软阈值宽限时间
+	FilenrHardThreshold           int    `json:"filenr_hard_threshold"` //文件配额的硬阈值
+	FilenrQuotaCalType            string `json:"filenr_quota_cal_type"` //文件项配额统计方式
+	FilenrSoftThreshold           int    `json:"filenr_soft_threshold"` //文件配额的软阈值
 	FilenrSoftThresholdOverTime   string `json:"filenr_soft_threshold_over_time"`
-	FilenrSuggestThreshold        int    `json:"filenr_suggest_threshold"`
+	FilenrSuggestThreshold        int    `json:"filenr_suggest_threshold"` //文件配额的建议阈值
 	FilenrUsedNr                  int    `json:"filenr_used_nr"`
-	IpsQuota                      int    `json:"ips_quota"`
+	IpsQuota                      int    `json:"ips_quota"` //iops限制（单位：个）（写）
 	IpsReal                       int    `json:"ips_real"`
-	LogicalGraceTime              int    `json:"logical_grace_time"`
-	LogicalHardThreshold          int    `json:"logical_hard_threshold"`
-	LogicalQuotaCalType           string `json:"logical_quota_cal_type"`
-	LogicalSoftThreshold          int    `json:"logical_soft_threshold"`
+	LogicalGraceTime              int    `json:"logical_grace_time"`     //逻辑空间的软阈值宽限时间
+	LogicalHardThreshold          int    `json:"logical_hard_threshold"` //逻辑空间的硬阈值
+	LogicalQuotaCalType           string `json:"logical_quota_cal_type"` //逻辑空间配额统计方式
+	LogicalSoftThreshold          int    `json:"logical_soft_threshold"` //逻辑空间的软阈值
 	LogicalSoftThresholdOverTime  string `json:"logical_soft_threshold_over_time"`
-	LogicalSuggestThreshold       int    `json:"logical_suggest_threshold"`
+	LogicalSuggestThreshold       int    `json:"logical_suggest_threshold"` //逻辑空间的建议阈值
 	LogicalUsedCapacity           int    `json:"logical_used_capacity"`
-	OpsQuota                      int    `json:"ops_quota"`
+	OpsQuota                      int    `json:"ops_quota"` //iops限制（单位：个）（读）
 	OpsReal                       int    `json:"ops_real"`
 	PhysicalCountRedundantSpace   bool   `json:"physical_count_redundant_space"`
-	PhysicalCountSnapshot         bool   `json:"physical_count_snapshot"`
-	PhysicalGraceTime             int    `json:"physical_grace_time"`
-	PhysicalHardThreshold         int    `json:"physical_hard_threshold"`
-	PhysicalQuotaCalType          string `json:"physical_quota_cal_type"`
-	PhysicalSoftThreshold         int    `json:"physical_soft_threshold"`
+	PhysicalCountSnapshot         bool   `json:"physical_count_snapshot"` //是否统计快照所占容量
+	PhysicalGraceTime             int    `json:"physical_grace_time"`     //物理空间的软阈值宽限时间
+	PhysicalHardThreshold         int    `json:"physical_hard_threshold"` //物理空间的硬阈值
+	PhysicalQuotaCalType          string `json:"physical_quota_cal_type"` //物理空间配额统计方式
+	PhysicalSoftThreshold         int    `json:"physical_soft_threshold"` //物理空间的软阈值
 	PhysicalSoftThresholdOverTime string `json:"physical_soft_threshold_over_time"`
-	PhysicalSuggestThreshold      int    `json:"physical_suggest_threshold"`
+	PhysicalSuggestThreshold      int    `json:"physical_suggest_threshold"` //物理空间的建议阈值
 	PhysicalUsedCapacity          int    `json:"physical_used_capacity"`
-	ReadBandwidthQuota            int    `json:"read_bandwidth_quota"`
+	ReadBandwidthQuota            int    `json:"read_bandwidth_quota"` //带宽限制（单位MB/s）（读）
 	ReadBandwidthReal             int    `json:"read_bandwidth_real"`
 	State                         string `json:"state"`
 	UserOrGroupID                 int    `json:"user_or_group_id"`
-	UserOrGroupName               string `json:"user_or_group_name"`
-	UserType                      string `json:"user_type"`
+	UserOrGroupName               string `json:"user_or_group_name"` //用户或用户组名
+	UserType                      string `json:"user_type"`          //用户或者用户组
 	Version                       int    `json:"version"`
-	WriteBandwidthQuota           int    `json:"write_bandwidth_quota"`
+	WriteBandwidthQuota           int    `json:"write_bandwidth_quota"` //带宽限制（单位MB/s）（写）
 	WriteBandwidthReal            int    `json:"write_bandwidth_real"`
 }
 type QuotaPage struct {
