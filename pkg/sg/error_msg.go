@@ -16,6 +16,9 @@ type ErrorMsg struct {
 }
 
 func (s *ErrorMsg) ErrorString() string {
+	if s.ErrNo != 0 {
+		return ""
+	}
 	return fmt.Sprintf("%d,%s,%s,%v", s.ErrNo, s.ErrMsg, s.DetailErrMsg, s.TimeStamp)
 }
 func (s *ErrorMsg) Error() error {
