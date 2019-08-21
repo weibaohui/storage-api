@@ -3,9 +3,9 @@ package common
 import (
 	"crypto/tls"
 	"errors"
-	"github.com/weibaohui/go-kit/httpkit"
 	"log"
 	"net/http"
+	"storage-api/pkg/utils/httpkit"
 	"strings"
 	"time"
 )
