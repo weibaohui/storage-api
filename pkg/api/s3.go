@@ -1,3 +1,4 @@
+//S3管理接口
 package api
 
 type CertificateInfo struct {

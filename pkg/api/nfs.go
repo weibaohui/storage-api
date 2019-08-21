@@ -1,3 +1,4 @@
+//NFS管理接口
 package api
 
 type Snapshot struct {
