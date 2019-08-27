@@ -9,8 +9,7 @@ import (
 
 type Instance struct {
 	*api.Config
-	UUID         string         //磁阵系统UUID
-	StoreName    string         //存储系统名称
+	ClusterUUID  string         //磁阵系统UUID
 	loginCookies []*http.Cookie //登录cookie
 	retryLogin   int            //当登录失败时尝试重新登录次数
 }
@@ -18,8 +17,7 @@ type Instance struct {
 func NewInstance(config *api.Config) *Instance {
 	instance := &Instance{
 		Config:       config,
-		UUID:         "",
-		StoreName:    "",
+		ClusterUUID:  "",
 		loginCookies: nil,
 	}
 	instance.connect()
@@ -33,12 +31,12 @@ func (i *Instance) connect() {
 	}
 	i.loginCookies = cookies
 
-	store, err := i.DefaultStore()
+	store, err := i.DefaultCluster()
 	if err != nil {
 		log.Fatal(err.Error())
 	}
-	i.StoreName = store.Name
-	i.UUID = store.UUID
+	i.StoragePoolName = i.Config.StoragePoolName
+	i.ClusterUUID = store.UUID
 }
 
 func (i *Instance) FullURL(path string) (fullURL string) {
@@ -46,5 +44,5 @@ func (i *Instance) FullURL(path string) (fullURL string) {
 }
 
 func (i *Instance) Command(command string) (fullURL string) {
-	return fmt.Sprintf("%s://%s:%s%s?user_name=%s&uuid=%s", i.Protocol, i.Host, i.Port, command, i.Username, i.UUID)
+	return fmt.Sprintf("%s://%s:%s%s?user_name=%s&uuid=%s", i.Protocol, i.Host, i.Port, command, i.Username, i.ClusterUUID)
 }

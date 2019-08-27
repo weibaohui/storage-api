@@ -11,13 +11,14 @@ var nfsApi api.NFSApi
 
 func init() {
 	config := &api.Config{
-		Protocol: "https",
-		Host:     "192.168.3.60",
-		Port:     "6080",
-		Username: "optadmin",
-		Password: "adminadmin",
+		Protocol:        "https",
+		Host:            "192.168.3.60",
+		Port:            "6080",
+		Username:        "optadmin",
+		Password:        "adminadmin",
+		StoragePoolName: "ParaStor300S",
 	}
-	nfsApi = NewInstance(config)
+	nfsApi, _ = NewInstance(config)
 }
 
 func TestListDirectory(t *testing.T) {

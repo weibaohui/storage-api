@@ -27,6 +27,7 @@ type DetailFiles struct {
 	Type            string `json:"type"` //DIR FILE
 }
 type NFSApi interface {
+
 	//创建目录
 	CreateDirectory(path string) (ok bool, err error)
 	//删除目录

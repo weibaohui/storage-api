@@ -27,8 +27,8 @@ func TestCookies(t *testing.T) {
 	fmt.Println(cookies)
 }
 
-func TestStoreList(t *testing.T) {
-	list, err := common.ListStore()
+func TestListCluster(t *testing.T) {
+	list, err := common.ListCluster()
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -41,8 +41,8 @@ func TestStoreList(t *testing.T) {
 
 }
 
-func TestDefaultStore(t *testing.T) {
-	store, err := common.DefaultStore()
+func TestDefaultCluster(t *testing.T) {
+	store, err := common.DefaultCluster()
 	if err != nil {
 		t.Fatal(err.Error())
 	}

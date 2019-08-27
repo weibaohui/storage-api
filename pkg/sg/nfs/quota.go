@@ -135,7 +135,7 @@ func (i *instance) CreateQuota(path string, ips, ops, readBw, writeBw int) (ok b
 	"write_bandwidth_quota":"%d",
 	"user_or_group_id":""
 	}]}`
-	fullPath := fmt.Sprintf("%s:%s", i.common.StoreName, path)
+	fullPath := fmt.Sprintf("%s:%s", i.common.Config.StoragePoolName, path)
 	config := fmt.Sprintf(s, fullPath, ips, ops, readBw, writeBw)
 	params["params"] = config
 	str, err := i.common.PostWithLoginSession(url, params)

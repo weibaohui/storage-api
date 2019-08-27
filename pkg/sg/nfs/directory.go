@@ -26,7 +26,7 @@ func (i *instance) CreateDirectory(path string) (ok bool, err error) {
 	"owner_group_id":0,
 	"owner_user_name":"root",
 	"owner_group_name":"root"
-	}`, i.common.StoreName, path)
+	}`, i.common.Config.StoragePoolName, path)
 	return i.createDirectory(config)
 }
 
@@ -45,7 +45,7 @@ func (i *instance) CreateDirectoryWithPermission(path, permission string) (bool,
 	"owner_group_id":0,
 	"owner_user_name":"root",
 	"owner_group_name":"root"
-	}`, i.common.StoreName, path, permission)
+	}`, i.common.Config.StoragePoolName, path, permission)
 	return i.createDirectory(config)
 }
 func (i *instance) createDirectory(config string) (ok bool, err error) {
@@ -74,7 +74,7 @@ func (i *instance) DeleteDirectory(path string) (ok bool, err error) {
 	params := make(map[string]string)
 	params["params"] = fmt.Sprintf(`{
 	"path":"%s:%s",
-	}`, i.common.StoreName, path)
+	}`, i.common.Config.StoragePoolName, path)
 
 	str, err := i.common.PostWithLoginSession(url, params)
 	if err != nil {
@@ -112,7 +112,7 @@ func (i *instance) listDirectory(config string) ([]*api.DetailFiles, error) {
 	}
 	for _, v := range result.Data.DetailFiles {
 		//去除存储服务器名称
-		v.PosixPath = strings.TrimPrefix(v.Path, i.common.StoreName+":")
+		v.PosixPath = strings.TrimPrefix(v.Path, i.common.Config.StoragePoolName+":")
 	}
 	return result.Data.DetailFiles, nil
 }
@@ -128,7 +128,7 @@ func (i *instance) ListDirectory(path string) ([]*api.DetailFiles, error) {
 	"display_details":true,
 	"type":"DIR",
 	"searches":[{"searchKey":"name","searchValue":""}]
-	}`, i.common.StoreName, path)
+	}`, i.common.Config.StoragePoolName, path)
 
 	return i.listDirectory(config)
 }
@@ -142,7 +142,7 @@ func (i *instance) ListDirectoryWithFiles(path string) ([]*api.DetailFiles, erro
 	"path":"%s:%s",	
 	"display_details":true,
 	"searches":[{"searchKey":"name","searchValue":""}]
-	}`, i.common.StoreName, path)
+	}`, i.common.Config.StoragePoolName, path)
 	return i.listDirectory(config)
 
 }

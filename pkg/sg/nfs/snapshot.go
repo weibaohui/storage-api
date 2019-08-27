@@ -67,7 +67,7 @@ func (i *instance) CreateSnapshot(name, path, desc string, expireTime int) (id s
 	"expire_time":"%d",
 	"create_user":"%s"
 	}]}
-	`, name, i.common.StoreName, path, desc, expireTime, i.common.Username)
+	`, name, i.common.Config.StoragePoolName, path, desc, expireTime, i.common.Username)
 	str, err := i.common.PostWithLoginSession(url, params)
 	if err != nil {
 		return "", err
