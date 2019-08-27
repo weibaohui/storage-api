@@ -3,11 +3,13 @@ package nfs
 import (
 	"fmt"
 	"storage-api/pkg/api"
+	"storage-api/pkg/sg/common"
 	"testing"
 	"time"
 )
 
 var nfsApi api.NFSApi
+var nfsAll *instance
 
 func init() {
 	config := &api.Config{
@@ -19,6 +21,10 @@ func init() {
 		StoragePoolName: "ParaStor300S",
 	}
 	nfsApi, _ = NewInstance(config)
+
+	nfsAll = &instance{
+		common: common.NewInstance(config),
+	}
 }
 
 func TestListDirectory(t *testing.T) {
@@ -121,4 +127,12 @@ func TestRun(t *testing.T) {
 	} else {
 		t.Fatal("删除目录失败", err.Error())
 	}
+}
+
+func TestListNFSAccessZone(t *testing.T) {
+	id, err := nfsAll.ListNFSAccessZone()
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	fmt.Println(id)
 }

@@ -61,3 +61,13 @@ func TestInstance_ClusterStatus(t *testing.T) {
 	fmt.Println(status.NodesNumber)
 
 }
+
+func TestListAccessZones(t *testing.T) {
+	list, err := common.ListAccessZones()
+	if err != nil {
+		t.Fatal(err.Error())
+	}
+	for k, v := range list {
+		fmt.Println(k, v.ID, v.Name)
+	}
+}
