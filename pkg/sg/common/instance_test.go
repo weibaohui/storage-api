@@ -34,9 +34,6 @@ func TestListCluster(t *testing.T) {
 	}
 	for _, v := range list.Data {
 		fmt.Println(v.Name, v.UUID)
-		fmt.Println("ClusterDataState=", v.ClusterDataState)
-		fmt.Println("ClusterRunningState=", v.ClusterRunningState)
-		fmt.Println("ClusterHealthyState=", v.ClusterHealthyState)
 	}
 
 }
@@ -47,9 +44,6 @@ func TestDefaultCluster(t *testing.T) {
 		t.Fatal(err.Error())
 	}
 	fmt.Println(store.Name, store.UUID)
-	fmt.Println("ClusterDataState=", store.ClusterDataState)
-	fmt.Println("ClusterRunningState=", store.ClusterRunningState)
-	fmt.Println("ClusterHealthyState=", store.ClusterHealthyState)
 }
 
 func TestInstance_ClusterStatus(t *testing.T) {
